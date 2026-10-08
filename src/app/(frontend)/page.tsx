@@ -255,7 +255,7 @@ export default async function HomePage() {
           <section id="games" className="section games">
             <div className="container games__grid">
               <div className="games__copy" data-reveal="copy">
-                <p className="games__alert">🚨 {games.kicker}</p>
+                <p className="games__alert">{games.kicker}</p>
                 <h2 className="h2">
                   <Accent text={games.heading} />
                 </h2>

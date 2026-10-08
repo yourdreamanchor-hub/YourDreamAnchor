@@ -1493,21 +1493,32 @@ html:has(main :target) .brand-intro {
   }
 }
 
-/* ---------- Games (striped haldi tent) ---------- */
+/* ---------- Games (warm evening celebration) ---------- */
 .games {
-  color: #1f1006;
-  background:
-    linear-gradient(180deg, rgb(247 197 49 / 0) 60%, rgb(247 197 49 / 1)),
-    repeating-linear-gradient(100deg, #f7c531 0 60px, #fff4cf 60px 120px);
+  color: var(--ink);
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(
+      180deg,
+      var(--bg) 0%,
+      rgb(13 8 18 / 0.12) 20%,
+      rgb(13 8 18 / 0.12) 75%,
+      var(--bg) 100%
+    ),
+    url('/media/games-celebration-v1.webp');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   overflow: hidden;
 }
 
 .games .h2 em {
-  color: var(--alert);
+  color: var(--gold);
 }
 
 .games .lead {
-  color: #4d3210;
+  color: #d4c6c5;
+  max-width: 48ch;
 }
 
 .games__grid {
@@ -1518,24 +1529,27 @@ html:has(main :target) .brand-intro {
 }
 
 .games__copy {
-  padding: clamp(24px, 4vw, 48px);
-  border-radius: var(--radius);
-  background: rgb(255 248 228 / 0.92);
-  box-shadow: 0 30px 60px -30px rgb(120 70 0 / 0.5);
+  max-width: 600px;
 }
 
 .games__alert {
-  display: inline-block;
-  margin: 0 0 18px;
-  padding: 8px 14px;
-  background: var(--alert);
-  color: #fff;
-  font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 0.12em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 22px;
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  transform: rotate(-2deg);
-  box-shadow: 4px 4px 0 #1f1006;
+}
+
+.games__alert::before {
+  content: '';
+  flex: 0 0 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 .games__list {
@@ -1550,8 +1564,9 @@ html:has(main :target) .brand-intro {
 .games__list li {
   padding: 8px 14px;
   border-radius: 999px;
-  border: 1.5px solid #1f1006;
-  font-weight: 700;
+  border: 1px solid rgb(246 238 226 / 0.24);
+  background: rgb(13 8 18 / 0.36);
+  font-weight: 600;
   font-size: 14px;
 }
 
@@ -1563,8 +1578,8 @@ html:has(main :target) .brand-intro {
   border-radius: 44px;
   background: #140b10;
   box-shadow:
-    0 40px 80px -30px rgb(80 40 0 / 0.7),
-    inset 0 0 0 2px #3a2a30;
+    0 40px 80px -30px rgb(0 0 0 / 0.7),
+    inset 0 0 0 2px rgb(246 238 226 / 0.18);
   transform: rotate(3deg);
 }
 
@@ -1577,6 +1592,10 @@ html:has(main :target) .brand-intro {
 }
 
 @media (max-width: 860px) {
+  .games {
+    background-position: 72% center;
+  }
+
   .games__grid {
     grid-template-columns: 1fr;
   }

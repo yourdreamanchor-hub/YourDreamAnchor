@@ -84,4 +84,4 @@ Spam protection: the form has a hidden honeypot field and allows at most 3 enqui
 visitors watching reels), and projects pause after a week with no activity. If either becomes a problem,
 upgrade to Pro or move videos to another S3-compatible store: only the `S3_*` values change.
 
-The seeded testimonials are **samples**. Replace them with real reviews before launch.
+The seeded testimonials are real comments couples left on @yourdreamanchor's Instagram posts. Ask them before launch whether they're happy to be quoted.

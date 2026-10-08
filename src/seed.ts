@@ -164,17 +164,28 @@ for (const [i, r] of reels.entries()) {
   })
 }
 
-// Clearly-marked samples: replace with real reviews in the admin before launch.
-const samples = [
-  'He had our grandparents and our college friends on the same dance floor. Nobody sat down all night.',
-  'The games were the highlight of our haldi. Our families still talk about team bride vs team groom.',
-  'Calm with the planners, crazy with the crowd. Exactly the anchor we wanted for our sangeet.',
+// Real comments left by couples on @yourdreamanchor's Instagram posts (emojis removed, wording kept).
+const testimonials = [
+  {
+    quote:
+      'The best of the best. Couldn’t have asked for anyone other than Your Dream Anchor for our big day.',
+    name: 'Naina',
+    event: 'Bride · Wedding at Shoonya Farm Retreat, Bengaluru',
+  },
+  {
+    quote:
+      'Thank you so much for hosting both our events. You kept everyone entertained and engaged all the time. Our guests had a lot of fun!',
+    name: 'Aanchal',
+    event: 'Bride · Sangeet & Haldi',
+  },
+  {
+    quote: '“Our dream anchor” for our big day. The Haldi was lit because of you!',
+    name: 'Hari',
+    event: 'Groom · Haldi & Wedding, Bengaluru',
+  },
 ]
-for (const [i, quote] of samples.entries()) {
-  await payload.create({
-    collection: 'testimonials',
-    data: { quote, name: `Sample review ${i + 1}`, event: 'Replace in Admin → Testimonials', order: i },
-  })
+for (const [i, t] of testimonials.entries()) {
+  await payload.create({ collection: 'testimonials', data: { ...t, order: i } })
 }
 
 await payload.updateGlobal({

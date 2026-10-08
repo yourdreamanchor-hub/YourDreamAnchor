@@ -6,6 +6,7 @@ import { revalidateSite } from '../hooks/revalidateSite'
 export const Media: CollectionConfig = {
   slug: 'media',
   admin: {
+    listSearchableFields: ['alt', 'filename'],
     group: 'Content',
     description: 'Upload photos and videos here. Videos: MP4 (H.264), ideally under 20 MB.',
   },

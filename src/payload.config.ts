@@ -32,6 +32,18 @@ export default buildConfig({
     meta: {
       titleSuffix: ' · Your Dream Anchor',
     },
+    components: {
+      graphics: {
+        Logo: '/components/admin/Brand#Logo',
+        Icon: '/components/admin/Brand#Icon',
+      },
+      beforeDashboard: ['/components/admin/Welcome'],
+    },
+    // Local development only: signs in the throwaway admin from .env.admin-test.local.
+    autoLogin:
+      process.env.NODE_ENV !== 'production' && env.ADMIN_TEST_EMAIL && env.ADMIN_TEST_PASSWORD
+        ? { email: env.ADMIN_TEST_EMAIL, password: env.ADMIN_TEST_PASSWORD }
+        : false,
     importMap: {
       baseDir: path.resolve(dirname),
     },

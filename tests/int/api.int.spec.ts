@@ -84,3 +84,17 @@ describe('Inquiries', () => {
     expect(home.hero.headline).toBeTruthy()
   })
 })
+
+describe('Media pickers', () => {
+  it('rejects a photo in a video-only field', async () => {
+    const photo = await payload.find({ collection: 'media', where: { mimeType: { contains: 'image' } }, limit: 1 })
+    const home = await payload.findGlobal({ slug: 'home', depth: 0 })
+    await expect(
+      payload.updateGlobal({
+        slug: 'home',
+        data: { hero: { ...home.hero, video: photo.docs[0].id } },
+      }),
+    ).rejects.toThrow()
+  })
+})
+

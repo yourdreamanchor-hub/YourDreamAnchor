@@ -2,13 +2,22 @@ import type { GlobalConfig } from 'payload'
 
 import { anyone, loggedIn } from '../access'
 import { revalidateSite } from '../hooks/revalidateSite'
+import { imageField, videoField } from '../fields/media'
 
 export const HomePage: GlobalConfig = {
   slug: 'home',
   label: 'Home page',
   admin: {
     group: 'Pages',
-    description: 'Everything on the home page, section by section.',
+    description:
+      'Everything on the home page, section by section. Click “Live Preview” (top right) to see changes next to the editor.',
+    livePreview: {
+      url: `${process.env.NEXT_PUBLIC_SERVER_URL || ''}/`,
+      breakpoints: [
+        { label: 'Phone', name: 'phone', width: 390, height: 844 },
+        { label: 'Laptop', name: 'laptop', width: 1440, height: 900 },
+      ],
+    },
   },
   access: { read: anyone, update: loggedIn },
   hooks: { afterChange: [revalidateSite] },
@@ -35,13 +44,14 @@ export const HomePage: GlobalConfig = {
                 {
                   type: 'row',
                   fields: [
-                    {
+                    videoField({
                       name: 'video',
-                      type: 'upload',
-                      relationTo: 'media',
-                      admin: { description: 'Background video: short, landscape, no sound needed.' },
-                    },
-                    { name: 'poster', type: 'upload', relationTo: 'media' },
+                      admin: { description: 'Background video: short (10–15 s), landscape, no sound needed.' },
+                    }),
+                    imageField({
+                      name: 'poster',
+                      admin: { description: 'Shown while the video loads, and on slow connections.' },
+                    }),
                   ],
                 },
                 {
@@ -72,7 +82,7 @@ export const HomePage: GlobalConfig = {
                 { name: 'kicker', type: 'text', defaultValue: 'Meet your anchor' },
                 { name: 'heading', type: 'text' },
                 { name: 'body', type: 'textarea' },
-                { name: 'portrait', type: 'upload', relationTo: 'media' },
+                imageField({ name: 'portrait', admin: { description: 'Portrait photo of Akshay (tall photos work best).' } }),
                 { name: 'signature', type: 'text' },
               ],
             },
@@ -102,7 +112,7 @@ export const HomePage: GlobalConfig = {
               fields: [
                 { name: 'title', type: 'text', required: true },
                 { name: 'description', type: 'textarea' },
-                { name: 'image', type: 'upload', relationTo: 'media' },
+                imageField({ name: 'image' }),
                 {
                   name: 'accent',
                   type: 'select',
@@ -140,7 +150,7 @@ export const HomePage: GlobalConfig = {
               labels: { singular: 'Photo', plural: 'Photos' },
               admin: { description: 'Photos shown in the gallery grid. Drag to reorder.' },
               fields: [
-                { name: 'image', type: 'upload', relationTo: 'media', required: true },
+                imageField({ name: 'image', required: true }),
                 { name: 'caption', type: 'text' },
               ],
             },
@@ -156,8 +166,8 @@ export const HomePage: GlobalConfig = {
                 { name: 'kicker', type: 'text', defaultValue: 'New game alert' },
                 { name: 'heading', type: 'text' },
                 { name: 'body', type: 'textarea' },
-                { name: 'video', type: 'upload', relationTo: 'media' },
-                { name: 'poster', type: 'upload', relationTo: 'media' },
+                videoField({ name: 'video', admin: { description: 'Shown inside the phone frame. Vertical video.' } }),
+                imageField({ name: 'poster' }),
                 {
                   name: 'list',
                   type: 'array',
@@ -183,7 +193,7 @@ export const HomePage: GlobalConfig = {
                     { name: 'venue', type: 'text' },
                   ],
                 },
-                { name: 'image', type: 'upload', relationTo: 'media' },
+                imageField({ name: 'image' }),
               ],
             },
           ],

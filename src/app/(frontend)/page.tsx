@@ -8,7 +8,9 @@ import { InquiryForm } from '@/components/site/InquiryForm'
 import { Moments, type ReelCard } from '@/components/site/Moments'
 import { Nav } from '@/components/site/Nav'
 import { Reveal } from '@/components/site/Reveal'
+import { WhatsAppFloat, WhatsAppIcon } from '@/components/site/WhatsAppButton'
 import { asMedia, getSiteData, mediaUrl } from '@/lib/data'
+import { whatsappDigits, whatsappUrl } from '@/lib/whatsapp'
 
 export const revalidate = 60
 
@@ -33,11 +35,7 @@ export default async function HomePage() {
     instagramUrl: r.instagramUrl,
   }))
 
-  const whatsapp = settings.whatsapp
-    ? `https://wa.me/${settings.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(
-        `Hi ${settings.anchorName.split(' ')[0]}, I'd like to check your availability for my celebration.`,
-      )}`
-    : null
+  const whatsapp = whatsappUrl(settings.whatsapp, settings.whatsappMessage)
   const marquee = home.marquee ?? []
 
   const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
@@ -319,7 +317,8 @@ export default async function HomePage() {
                 {whatsapp && (
                   <li>
                     <a href={whatsapp} target="_blank" rel="noreferrer" className="btn btn--whatsapp">
-                      WhatsApp us
+                      <WhatsAppIcon size={20} />
+                      Chat on WhatsApp
                     </a>
                   </li>
                 )}
@@ -343,11 +342,17 @@ export default async function HomePage() {
               <InquiryForm
                 eventTypes={eventTypes}
                 successMessage={contact.successMessage || 'Thank you! We’ll be in touch soon.'}
+                whatsappNumber={whatsappDigits(settings.whatsapp)}
+                anchorFirstName={settings.anchorName.split(' ')[0]}
               />
             </div>
           </div>
         </section>
       </main>
+
+      {whatsapp && settings.showWhatsAppButton !== false && (
+        <WhatsAppFloat href={whatsapp} name={settings.anchorName.split(' ')[0]} />
+      )}
 
       <footer className="footer">
         <div className="container footer__inner">
@@ -366,6 +371,11 @@ export default async function HomePage() {
             {settings.youtube && (
               <a href={settings.youtube} target="_blank" rel="noreferrer">
                 YouTube
+              </a>
+            )}
+            {whatsapp && (
+              <a href={whatsapp} target="_blank" rel="noreferrer">
+                WhatsApp
               </a>
             )}
             <a href="#contact">Book a date</a>

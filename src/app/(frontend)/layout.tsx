@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Fraunces, Manrope } from 'next/font/google'
 import React from 'react'
 
+import { LivePreviewListener } from '@/components/site/LivePreviewListener'
 import { getSiteData, mediaUrl } from '@/lib/data'
 import './styles.css'
 
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
       <body>
         {children}
+        <LivePreviewListener />
         <Analytics />
       </body>
     </html>

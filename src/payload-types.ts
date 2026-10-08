@@ -140,6 +140,9 @@ export interface Reel {
   title: string;
   category: 'haldi' | 'mehendi' | 'sangeet' | 'wedding' | 'reception' | 'games' | 'corporate' | 'other';
   location?: string | null;
+  /**
+   * Vertical (9:16) MP4, ideally under 20 MB.
+   */
   video: number | Media;
   /**
    * Cover image shown before the video plays.
@@ -219,6 +222,9 @@ export interface Testimonial {
   quote: string;
   name: string;
   event?: string | null;
+  /**
+   * Optional photo of the couple.
+   */
   photo?: (number | null) | Media;
   order?: number | null;
   updatedAt: string;
@@ -250,6 +256,8 @@ export interface Inquiry {
   createdAt: string;
 }
 /**
+ * People who can log in to this admin panel.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -528,7 +536,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Everything on the home page, section by section.
+ * Everything on the home page, section by section. Click “Live Preview” (top right) to see changes next to the editor.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home".
@@ -543,9 +551,12 @@ export interface Home {
     headline: string;
     subheadline?: string | null;
     /**
-     * Background video: short, landscape, no sound needed.
+     * Background video: short (10–15 s), landscape, no sound needed.
      */
     video?: (number | null) | Media;
+    /**
+     * Shown while the video loads, and on slow connections.
+     */
     poster?: (number | null) | Media;
     primaryLabel?: string | null;
     secondaryLabel?: string | null;
@@ -563,6 +574,9 @@ export interface Home {
     kicker?: string | null;
     heading?: string | null;
     body?: string | null;
+    /**
+     * Portrait photo of Akshay (tall photos work best).
+     */
     portrait?: (number | null) | Media;
     signature?: string | null;
   };
@@ -603,6 +617,9 @@ export interface Home {
     kicker?: string | null;
     heading?: string | null;
     body?: string | null;
+    /**
+     * Shown inside the phone frame. Vertical video.
+     */
     video?: (number | null) | Media;
     poster?: (number | null) | Media;
     list?:
@@ -642,19 +659,36 @@ export interface SiteSetting {
    * Shown under the name, e.g. "Wedding & Event Anchor".
    */
   role?: string | null;
+  /**
+   * Round logo in the menu bar and browser tab. Square image, at least 200×200.
+   */
   logo?: (number | null) | Media;
+  /**
+   * Shown on the site as a tap-to-call link.
+   */
   phone?: string | null;
   /**
-   * Number with country code, digits only, e.g. 919800000000
+   * Shown on the site.
+   */
+  email?: string | null;
+  /**
+   * With country code. Visitors tap a button and WhatsApp opens a chat with this number. Leave empty to hide all WhatsApp buttons.
    */
   whatsapp?: string | null;
-  email?: string | null;
+  /**
+   * Pre-filled message when a visitor opens the chat. They can edit it before sending.
+   */
+  whatsappMessage?: string | null;
+  showWhatsAppButton?: boolean | null;
   baseCity?: string | null;
   instagram?: string | null;
   instagramHandle?: string | null;
   youtube?: string | null;
   metaTitle?: string | null;
   metaDescription?: string | null;
+  /**
+   * Preview image when the site is shared on WhatsApp, Instagram, etc.
+   */
   shareImage?: (number | null) | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -763,8 +797,10 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   role?: T;
   logo?: T;
   phone?: T;
-  whatsapp?: T;
   email?: T;
+  whatsapp?: T;
+  whatsappMessage?: T;
+  showWhatsAppButton?: T;
   baseCity?: T;
   instagram?: T;
   instagramHandle?: T;

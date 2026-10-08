@@ -17,6 +17,7 @@ export const eventTypes = [
 export const Inquiries: CollectionConfig = {
   slug: 'inquiries',
   admin: {
+    listSearchableFields: ['name', 'phone', 'email', 'city'],
     group: 'Bookings',
     useAsTitle: 'name',
     defaultColumns: ['name', 'eventType', 'eventDate', 'city', 'status', 'createdAt'],
@@ -45,6 +46,11 @@ export const Inquiries: CollectionConfig = {
     ],
   },
   fields: [
+    {
+      name: 'reply',
+      type: 'ui',
+      admin: { position: 'sidebar', components: { Field: '/components/admin/InquiryReply' } },
+    },
     {
       type: 'row',
       fields: [

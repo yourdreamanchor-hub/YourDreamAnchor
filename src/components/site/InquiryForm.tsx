@@ -3,11 +3,46 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
 
+import { whatsappUrl } from '@/lib/whatsapp'
+
+import { WhatsAppIcon } from './WhatsAppButton'
+
 type Option = { label: string; value: string }
 
-export function InquiryForm({ eventTypes, successMessage }: { eventTypes: Option[]; successMessage: string }) {
+type Props = {
+  eventTypes: Option[]
+  successMessage: string
+  whatsappNumber?: string | null
+  anchorFirstName: string
+}
+
+/** Turns the submitted enquiry into a ready-to-send WhatsApp message. */
+function enquiryMessage(body: Record<string, FormDataEntryValue>, eventTypes: Option[], to: string) {
+  const event = eventTypes.find((t) => t.value === body.eventType)?.label ?? body.eventType
+  const date = body.eventDate
+    ? new Date(String(body.eventDate)).toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      })
+    : null
+  return [
+    `Hi ${to}! I just sent an enquiry on your website.`,
+    '',
+    `Name: ${body.name}`,
+    `Celebration: ${event}`,
+    date && `Date: ${date}`,
+    body.city && `City / venue: ${body.city}`,
+    body.message && `About it: ${body.message}`,
+  ]
+    .filter((line): line is string => typeof line === 'string')
+    .join('\n')
+}
+
+export function InquiryForm({ eventTypes, successMessage, whatsappNumber, anchorFirstName }: Props) {
   const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
   const [error, setError] = useState<string | null>(null)
+  const [followUp, setFollowUp] = useState<string | null>(null)
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -26,7 +61,10 @@ export function InquiryForm({ eventTypes, successMessage }: { eventTypes: Option
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
-      if (res.ok) return setState('done')
+      if (res.ok) {
+        setFollowUp(whatsappUrl(whatsappNumber, enquiryMessage(body, eventTypes, anchorFirstName)))
+        return setState('done')
+      }
       const json = await res.json().catch(() => null)
       setError(json?.errors?.[0]?.message ?? null)
       setState('error')
@@ -42,6 +80,15 @@ export function InquiryForm({ eventTypes, successMessage }: { eventTypes: Option
           ✦
         </span>
         <p>{successMessage}</p>
+        {followUp && (
+          <>
+            <p className="form-done__hint">Want a faster reply? Send the same details on WhatsApp.</p>
+            <a href={followUp} target="_blank" rel="noreferrer" className="btn btn--whatsapp">
+              <WhatsAppIcon size={20} />
+              Send on WhatsApp
+            </a>
+          </>
+        )}
       </div>
     )
   }

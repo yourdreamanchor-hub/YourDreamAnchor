@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { anyone, loggedIn } from '../access'
 import { revalidateSite } from '../hooks/revalidateSite'
+import { imageField, videoField } from '../fields/media'
 
 export const reelCategories = [
   { label: 'Haldi', value: 'haldi' },
@@ -18,6 +19,7 @@ export const Reels: CollectionConfig = {
   slug: 'reels',
   labels: { singular: 'Reel', plural: 'Reels' },
   admin: {
+    listSearchableFields: ['title', 'location', 'caption'],
     group: 'Content',
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'location', 'featured', 'order'],
@@ -43,13 +45,15 @@ export const Reels: CollectionConfig = {
     {
       type: 'row',
       fields: [
-        { name: 'video', type: 'upload', relationTo: 'media', required: true },
-        {
+        videoField({
+          name: 'video',
+          required: true,
+          admin: { description: 'Vertical (9:16) MP4, ideally under 20 MB.' },
+        }),
+        imageField({
           name: 'poster',
-          type: 'upload',
-          relationTo: 'media',
           admin: { description: 'Cover image shown before the video plays.' },
-        },
+        }),
       ],
     },
     { name: 'caption', type: 'textarea' },

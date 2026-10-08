@@ -7,6 +7,8 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
+  // Lets the test server build into its own folder alongside a running dev server.
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   images: {
     localPatterns: [
       {

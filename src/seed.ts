@@ -195,6 +195,9 @@ await payload.updateGlobal({
     anchorName: 'Akshay R Takalkar',
     role: 'Wedding & Event Anchor',
     baseCity: 'Mumbai · Bengaluru · Destination',
+    // From the @yourdreamanchor Instagram bio.
+    phone: '+91 87622 25685',
+    whatsapp: '+91 87622 25685',
     instagram: 'https://www.instagram.com/yourdreamanchor/',
     instagramHandle: '@yourdreamanchor',
     logo: img.logo,

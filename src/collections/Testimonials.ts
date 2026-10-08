@@ -2,10 +2,12 @@ import type { CollectionConfig } from 'payload'
 
 import { anyone, loggedIn } from '../access'
 import { revalidateSite } from '../hooks/revalidateSite'
+import { imageField } from '../fields/media'
 
 export const Testimonials: CollectionConfig = {
   slug: 'testimonials',
   admin: {
+    listSearchableFields: ['name', 'quote', 'event'],
     group: 'Content',
     useAsTitle: 'name',
     defaultColumns: ['name', 'event', 'order'],
@@ -27,7 +29,7 @@ export const Testimonials: CollectionConfig = {
         { name: 'event', type: 'text', admin: { placeholder: 'Wedding · Mumbai' } },
       ],
     },
-    { name: 'photo', type: 'upload', relationTo: 'media' },
+    imageField({ name: 'photo', admin: { description: 'Optional photo of the couple.' } }),
     { name: 'order', type: 'number', defaultValue: 0 },
   ],
 }

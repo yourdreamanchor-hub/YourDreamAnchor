@@ -1,0 +1,150 @@
+{
+  "encoding": "H.264, CRF 17, 30 fps, no audio, fast start",
+  "note": "Exports retain the original footage quality. Scaling and reframing do not create missing detail; these are not native 1080p or AI upscales.",
+  "exports": [
+    {
+      "name": "sangeet",
+      "source": "media-import/instagram/Dcq1M-lR8hz.mp4",
+      "sourceSize": [
+        720,
+        1280
+      ],
+      "start": 31,
+      "duration": 12,
+      "device": "desktop",
+      "crop": [
+        720,
+        405,
+        0,
+        380
+      ],
+      "dimensions": [
+        1280,
+        720
+      ],
+      "video": "public/media/hero-sangeet-desktop-v1.mp4",
+      "poster": "public/media/hero-sangeet-desktop-v1-poster.jpg",
+      "bytes": 12429670
+    },
+    {
+      "name": "sangeet",
+      "source": "media-import/instagram/Dcq1M-lR8hz.mp4",
+      "sourceSize": [
+        720,
+        1280
+      ],
+      "start": 31,
+      "duration": 12,
+      "device": "mobile",
+      "crop": [
+        720,
+        880,
+        0,
+        240
+      ],
+      "dimensions": [
+        720,
+        880
+      ],
+      "video": "public/media/hero-sangeet-mobile-v1.mp4",
+      "poster": "public/media/hero-sangeet-mobile-v1-poster.jpg",
+      "bytes": 8691539
+    },
+    {
+      "name": "haldi",
+      "source": "media-import/instagram/DeBzehSRgD4.mp4",
+      "sourceSize": [
+        720,
+        1280
+      ],
+      "start": 64,
+      "duration": 12,
+      "device": "desktop",
+      "crop": [
+        720,
+        405,
+        0,
+        410
+      ],
+      "dimensions": [
+        1280,
+        720
+      ],
+      "video": "public/media/hero-haldi-desktop-v1.mp4",
+      "poster": "public/media/hero-haldi-desktop-v1-poster.jpg",
+      "bytes": 13007859
+    },
+    {
+      "name": "haldi",
+      "source": "media-import/instagram/DeBzehSRgD4.mp4",
+      "sourceSize": [
+        720,
+        1280
+      ],
+      "start": 64,
+      "duration": 12,
+      "device": "mobile",
+      "crop": [
+        720,
+        880,
+        0,
+        240
+      ],
+      "dimensions": [
+        720,
+        880
+      ],
+      "video": "public/media/hero-haldi-mobile-v1.mp4",
+      "poster": "public/media/hero-haldi-mobile-v1-poster.jpg",
+      "bytes": 9947963
+    },
+    {
+      "name": "games",
+      "source": "media-import/instagram/C7ZxSazKZmH.mp4",
+      "sourceSize": [
+        1080,
+        1920
+      ],
+      "start": 8,
+      "duration": 12,
+      "device": "desktop",
+      "crop": [
+        1080,
+        608,
+        0,
+        650
+      ],
+      "dimensions": [
+        1280,
+        720
+      ],
+      "video": "public/media/hero-games-desktop-v1.mp4",
+      "poster": "public/media/hero-games-desktop-v1-poster.jpg",
+      "bytes": 11269158
+    },
+    {
+      "name": "games",
+      "source": "media-import/instagram/C7ZxSazKZmH.mp4",
+      "sourceSize": [
+        1080,
+        1920
+      ],
+      "start": 8,
+      "duration": 12,
+      "device": "mobile",
+      "crop": [
+        1080,
+        1260,
+        0,
+        380
+      ],
+      "dimensions": [
+        1080,
+        1260
+      ],
+      "video": "public/media/hero-games-mobile-v1.mp4",
+      "poster": "public/media/hero-games-mobile-v1-poster.jpg",
+      "bytes": 13289914
+    }
+  ]
+}

@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
     [
       '/media/hero-quality-v1.mp4',
       '/media/hero-quality-v1-poster.jpg',
+      ...['sangeet', 'haldi', 'games'].flatMap((film) =>
+        ['desktop', 'mobile'].flatMap((device) => [
+          `/media/hero-${film}-${device}-v1.mp4`,
+          `/media/hero-${film}-${device}-v1-poster.jpg`,
+        ]),
+      ),
       '/media/games-celebration-v1.webp',
       '/brand/anchor-monogram-v1.svg',
       '/brand/anchor-icon-v1.svg',

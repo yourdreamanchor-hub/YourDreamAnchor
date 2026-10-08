@@ -49,7 +49,9 @@ export function BrandIntro({ brand, logo }: { brand: string; logo: string }) {
       return
     }
 
-    const media = document.querySelector<HTMLVideoElement | HTMLImageElement>('.hero__video')
+    const media = document.querySelector<HTMLVideoElement | HTMLImageElement>(
+      '.hero__video video, video.hero__video, img.hero__video',
+    )
     const poster = new Image()
     let resolveMedia: () => void
     const mediaReady = new Promise<void>((resolve) => {

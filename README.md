@@ -74,6 +74,20 @@ not native 1080p or an AI upscale. Do not recompress it with the low-bitrate exa
 and its selected poster normally. The bundled files have versioned names and long-lived caching;
 use a new filename and update the resolver and cache paths when replacing the bundled export.
 
+The approved opener now leads a four-film sequence: Wedding, Sangeet, Haldi and Games. The three
+additional films have separate landscape and portrait crops, matching posters, 12-second lengths,
+H.264 encoding at CRF 17 and no audio. Source ranges, crop rectangles and export sizes are recorded
+in `design/hero-films.json`. Run `node scripts/build-hero-films.mjs` to reproduce them when the
+original local footage is available. They preserve source quality; reframing and scaling do not
+create missing detail or make a recording native 1080p.
+
+`HeroFilms` starts with only the opening video. It requests another film near the end or when a
+visitor chooses one, holds the current picture until a decoded frame is ready, and dissolves over
+700 ms. The outgoing video is removed afterward. The sequence pauses out of view and in a hidden
+tab, offers manual film selection and a pause button, and holds a poster by default for reduced
+motion or data saver. Keyboard focus on its controls keeps the chosen film from rotating. A custom
+hero video selected in the CMS continues to play by itself with its own poster.
+
 ## Changing the content model
 
 Schema changes go through migrations (auto-sync is off):

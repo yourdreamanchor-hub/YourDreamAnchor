@@ -7,13 +7,14 @@ import { BgVideo } from '@/components/site/BgVideo'
 import { BrandIntro } from '@/components/site/BrandIntro'
 import { BrandMark } from '@/components/site/BrandMark'
 import { InquiryForm } from '@/components/site/InquiryForm'
+import { HeroFilms } from '@/components/site/HeroFilms'
 import { Moments, type ReelCard } from '@/components/site/Moments'
 import { Nav } from '@/components/site/Nav'
 import { Reveal } from '@/components/site/Reveal'
 import { WhatsAppFloat, WhatsAppIcon } from '@/components/site/WhatsAppButton'
 import { asMedia, getSiteData, mediaUrl } from '@/lib/data'
 import { brandLogo } from '@/lib/brand'
-import { heroMedia } from '@/lib/hero-media'
+import { heroFilms } from '@/lib/hero-media'
 import { whatsappDigits, whatsappUrl } from '@/lib/whatsapp'
 
 export const revalidate = 60
@@ -23,7 +24,7 @@ const categoryLabel = Object.fromEntries(reelCategories.map((c) => [c.value, c.l
 export default async function HomePage() {
   const { home, settings, reels, testimonials } = await getSiteData()
   const { hero } = home
-  const heroFilm = heroMedia(mediaUrl(hero.video), mediaUrl(hero.poster, 'wide'))
+  const films = heroFilms(mediaUrl(hero.video), mediaUrl(hero.poster, 'wide'))
   const logo = brandLogo(mediaUrl(settings.logo))
   const about = home.about ?? {}
   const games = home.games ?? {}
@@ -83,29 +84,30 @@ export default async function HomePage() {
       <main id="top">
         {/* HERO */}
         <section className="hero">
-          <BgVideo className="hero__video" src={heroFilm.src} poster={heroFilm.poster} />
-          <div className="hero__veil" />
-          <div className="container hero__content">
-            <div className="hero__identity">
-              <h1 className="hero__title">
-                <Accent text={hero.headline} />
-              </h1>
-              {hero.eyebrow && <p className="hero__role">{hero.eyebrow}</p>}
-              {hero.subheadline && <p className="hero__sub">{hero.subheadline}</p>}
+          <HeroFilms films={films} key={films[0]?.src || films[0]?.poster}>
+            <div className="hero__veil" />
+            <div className="container hero__content">
+              <div className="hero__identity">
+                <h1 className="hero__title">
+                  <Accent text={hero.headline} />
+                </h1>
+                {hero.eyebrow && <p className="hero__role">{hero.eyebrow}</p>}
+                {hero.subheadline && <p className="hero__sub">{hero.subheadline}</p>}
+              </div>
+              <div className="hero__actions">
+                <a href="#contact" className="btn btn--gold hero__book">
+                  {hero.primaryLabel || 'Check your date'}
+                </a>
+                <a href="#moments" className="hero__watch">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.25" />
+                    <path d="m10 8 6 4-6 4V8Z" fill="currentColor" />
+                  </svg>
+                  {hero.secondaryLabel || 'Watch the moments'}
+                </a>
+              </div>
             </div>
-            <div className="hero__actions">
-              <a href="#contact" className="btn btn--gold hero__book">
-                {hero.primaryLabel || 'Check your date'}
-              </a>
-              <a href="#moments" className="hero__watch">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.25" />
-                  <path d="m10 8 6 4-6 4V8Z" fill="currentColor" />
-                </svg>
-                {hero.secondaryLabel || 'Watch the moments'}
-              </a>
-            </div>
-          </div>
+          </HeroFilms>
         </section>
 
         {highlights.length > 0 && (

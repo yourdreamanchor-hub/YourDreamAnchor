@@ -27,7 +27,10 @@ export const SiteSettings: GlobalConfig = {
             },
             imageField({
               name: 'logo',
-              admin: { description: 'Round logo in the menu bar and browser tab. Square image, at least 200×200.' },
+              admin: {
+                description:
+                  'Site monogram, shown in the loading intro, scrolled header, footer and browser tab. Use a white SVG or transparent PNG. Leave empty for the original monogram.',
+              },
             }),
           ],
         },
@@ -66,8 +69,12 @@ export const SiteSettings: GlobalConfig = {
               name: 'whatsappMessage',
               type: 'textarea',
               label: 'WhatsApp greeting',
-              defaultValue: 'Hi Akshay! I found you on your website and would like to check your availability for my celebration.',
-              admin: { description: 'Pre-filled message when a visitor opens the chat. They can edit it before sending.' },
+              defaultValue:
+                'Hi Akshay! I found you on your website and would like to check your availability for my celebration.',
+              admin: {
+                description:
+                  'Pre-filled message when a visitor opens the chat. They can edit it before sending.',
+              },
             },
             {
               name: 'showWhatsAppButton',
@@ -106,7 +113,9 @@ export const SiteSettings: GlobalConfig = {
             },
             imageField({
               name: 'shareImage',
-              admin: { description: 'Preview image when the site is shared on WhatsApp, Instagram, etc.' },
+              admin: {
+                description: 'Preview image when the site is shared on WhatsApp, Instagram, etc.',
+              },
             }),
           ],
         },

@@ -546,9 +546,12 @@ export interface Home {
   hero: {
     eyebrow?: string | null;
     /**
-     * Wrap a word in *asterisks* to show it in gold italics.
+     * Keep this short so the video has room to breathe. Wrap a word in *asterisks* to show it in gold italics.
      */
     headline: string;
+    /**
+     * One short line beneath the name and role, if needed.
+     */
     subheadline?: string | null;
     /**
      * Background video: short (10–15 s), landscape, no sound needed.
@@ -562,7 +565,7 @@ export interface Home {
     secondaryLabel?: string | null;
   };
   /**
-   * The scrolling strip under the hero.
+   * The celebration and destination labels beneath the hero.
    */
   marquee?:
     | {
@@ -660,7 +663,7 @@ export interface SiteSetting {
    */
   role?: string | null;
   /**
-   * Round logo in the menu bar and browser tab. Square image, at least 200×200.
+   * Site monogram, shown in the loading intro, scrolled header, footer and browser tab. Use a white SVG or transparent PNG. Leave empty for the original monogram.
    */
   logo?: (number | null) | Media;
   /**

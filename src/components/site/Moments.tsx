@@ -17,8 +17,36 @@ export type ReelCard = {
 function ReelTile({ reel, onOpen }: { reel: ReelCard; onOpen: () => void }) {
   const ref = useRef<HTMLVideoElement>(null)
 
+  useEffect(() => {
+    const video = ref.current
+    if (!video) return
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => {
+      if (reduce.matches || document.hidden) video.pause()
+    }
+    const observer =
+      'IntersectionObserver' in window
+        ? new IntersectionObserver(([entry]) => {
+            if (!entry.isIntersecting) video.pause()
+          })
+        : null
+    observer?.observe(video)
+    reduce.addEventListener('change', update)
+    document.addEventListener('visibilitychange', update)
+    return () => {
+      observer?.disconnect()
+      reduce.removeEventListener('change', update)
+      document.removeEventListener('visibilitychange', update)
+      video.pause()
+    }
+  }, [reel.video])
+
   const play = () => {
-    if (window.matchMedia('(hover: hover)').matches) ref.current?.play().catch(() => {})
+    if (
+      window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    )
+      ref.current?.play().catch(() => {})
   }
   const stop = () => {
     const v = ref.current
@@ -31,6 +59,7 @@ function ReelTile({ reel, onOpen }: { reel: ReelCard; onOpen: () => void }) {
   return (
     <button
       className={`reel reel--${reel.category}`}
+      data-reveal="card"
       onMouseEnter={play}
       onMouseLeave={stop}
       onFocus={play}
@@ -38,7 +67,15 @@ function ReelTile({ reel, onOpen }: { reel: ReelCard; onOpen: () => void }) {
       onClick={onOpen}
       aria-label={`Play: ${reel.title}`}
     >
-      <video ref={ref} src={reel.video} poster={reel.poster} muted loop playsInline preload="none" />
+      <video
+        ref={ref}
+        src={reel.video}
+        poster={reel.poster}
+        muted
+        loop
+        playsInline
+        preload="none"
+      />
       <span className="reel__shade" />
       <span className="reel__tag">{reel.categoryLabel}</span>
       <span className="reel__play" aria-hidden>
@@ -108,7 +145,7 @@ export function Moments({ reels }: { reels: ReelCard[] }) {
         </div>
       )}
 
-      <div className="reels" data-reveal>
+      <div className="reels" data-reveal-group>
         {shown.map((r, i) => (
           <ReelTile key={r.id} reel={r} onOpen={() => setActive(i)} />
         ))}
@@ -122,7 +159,14 @@ export function Moments({ reels }: { reels: ReelCard[] }) {
       >
         {current && (
           <div className="lightbox__body">
-            <video key={current.id} src={current.video} poster={current.poster} controls autoPlay playsInline />
+            <video
+              key={current.id}
+              src={current.video}
+              poster={current.poster}
+              controls
+              autoPlay
+              playsInline
+            />
             <div className="lightbox__info">
               <span className="eyebrow">{current.categoryLabel}</span>
               <h3>{current.title}</h3>

@@ -4,12 +4,16 @@ import { eventTypes } from '@/collections/Inquiries'
 import { reelCategories } from '@/collections/Reels'
 import { Accent } from '@/components/site/Accent'
 import { BgVideo } from '@/components/site/BgVideo'
+import { BrandIntro } from '@/components/site/BrandIntro'
+import { BrandMark } from '@/components/site/BrandMark'
 import { InquiryForm } from '@/components/site/InquiryForm'
 import { Moments, type ReelCard } from '@/components/site/Moments'
 import { Nav } from '@/components/site/Nav'
 import { Reveal } from '@/components/site/Reveal'
 import { WhatsAppFloat, WhatsAppIcon } from '@/components/site/WhatsAppButton'
 import { asMedia, getSiteData, mediaUrl } from '@/lib/data'
+import { brandLogo } from '@/lib/brand'
+import { heroMedia } from '@/lib/hero-media'
 import { whatsappDigits, whatsappUrl } from '@/lib/whatsapp'
 
 export const revalidate = 60
@@ -19,6 +23,8 @@ const categoryLabel = Object.fromEntries(reelCategories.map((c) => [c.value, c.l
 export default async function HomePage() {
   const { home, settings, reels, testimonials } = await getSiteData()
   const { hero } = home
+  const heroFilm = heroMedia(mediaUrl(hero.video), mediaUrl(hero.poster, 'wide'))
+  const logo = brandLogo(mediaUrl(settings.logo))
   const about = home.about ?? {}
   const games = home.games ?? {}
   const contact = home.contact ?? {}
@@ -36,7 +42,18 @@ export default async function HomePage() {
   }))
 
   const whatsapp = whatsappUrl(settings.whatsapp, settings.whatsappMessage)
-  const marquee = home.marquee ?? []
+  const highlights = home.marquee ?? []
+  const highlightTargets: Record<string, string | undefined> = {
+    haldi: home.services?.length ? '#services' : undefined,
+    mehendi: home.services?.length ? '#services' : undefined,
+    sangeet: home.services?.length ? '#services' : undefined,
+    wedding: home.services?.length ? '#services' : undefined,
+    reception: home.services?.length ? '#services' : undefined,
+    'new game alert': games.heading ? '#games' : undefined,
+    mumbai: home.destinations?.length ? '#destinations' : undefined,
+    bengaluru: home.destinations?.length ? '#destinations' : undefined,
+    'destination weddings': home.destinations?.length ? '#destinations' : undefined,
+  }
 
   const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
   const jsonLd = {
@@ -60,56 +77,58 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <Reveal />
-      <Nav brand={settings.brandName} instagram={settings.instagram} logo={mediaUrl(settings.logo, 'thumb')} />
+      <BrandIntro brand={settings.brandName} logo={logo} />
+      <Nav brand={settings.brandName} instagram={settings.instagram} logo={logo} />
 
       <main id="top">
         {/* HERO */}
         <section className="hero">
-          <BgVideo className="hero__video" src={mediaUrl(hero.video)} poster={mediaUrl(hero.poster, 'wide')} />
+          <BgVideo className="hero__video" src={heroFilm.src} poster={heroFilm.poster} />
           <div className="hero__veil" />
-          <div className="hero__lights" aria-hidden>
-            {Array.from({ length: 14 }, (_, i) => (
-              <span key={i} style={{ '--i': i } as React.CSSProperties} />
-            ))}
-          </div>
           <div className="container hero__content">
-            <p className="eyebrow hero__eyebrow">
-              <span className="dot" /> {hero.eyebrow}
-            </p>
-            <h1 className="hero__title">
-              <Accent text={hero.headline} />
-            </h1>
-            {hero.subheadline && <p className="hero__sub">{hero.subheadline}</p>}
+            <div className="hero__identity">
+              <h1 className="hero__title">
+                <Accent text={hero.headline} />
+              </h1>
+              {hero.eyebrow && <p className="hero__role">{hero.eyebrow}</p>}
+              {hero.subheadline && <p className="hero__sub">{hero.subheadline}</p>}
+            </div>
             <div className="hero__actions">
-              <a href="#contact" className="btn btn--gold btn--lg">
+              <a href="#contact" className="btn btn--gold hero__book">
                 {hero.primaryLabel || 'Check your date'}
               </a>
-              <a href="#moments" className="btn btn--ghost btn--lg">
-                <span className="btn__play" aria-hidden>
-                  ▶
-                </span>
+              <a href="#moments" className="hero__watch">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.25" />
+                  <path d="m10 8 6 4-6 4V8Z" fill="currentColor" />
+                </svg>
                 {hero.secondaryLabel || 'Watch the moments'}
               </a>
             </div>
           </div>
-          <div className="hero__sig container">
-            <span>{settings.anchorName}</span>
-            <span className="muted">{settings.role}</span>
-          </div>
         </section>
 
-        {marquee.length > 0 && (
-          <div className="marquee" aria-label={marquee.map((m) => m.text).join(', ')}>
-            <div className="marquee__track" aria-hidden>
-              {[0, 1].map((k) => (
-                <div className="marquee__group" key={k}>
-                  {marquee.map((m, i) => (
-                    <span key={i}>
-                      {m.text} <i>✦</i>
-                    </span>
-                  ))}
-                </div>
-              ))}
+        {highlights.length > 0 && (
+          <div id="celebrations" className="hero-highlights">
+            <div className="container">
+              <ul
+                className="hero-highlights__list"
+                role="list"
+                aria-label="Celebrations and destinations"
+                data-reveal="heading"
+              >
+                {highlights.map((item, i) => {
+                  const target = highlightTargets[item.text.trim().toLowerCase()]
+                  return (
+                    <li
+                      key={item.id ?? i}
+                      className={target === '#games' ? 'hero-highlights__feature' : undefined}
+                    >
+                      {target ? <a href={target}>{item.text}</a> : <span>{item.text}</span>}
+                    </li>
+                  )
+                })}
+              </ul>
             </div>
           </div>
         )}
@@ -117,14 +136,16 @@ export default async function HomePage() {
         {/* ABOUT */}
         <section id="about" className="section about">
           <div className="container about__grid">
-            <figure className="about__portrait" data-reveal>
-              {mediaUrl(about.portrait) && <img src={mediaUrl(about.portrait, 'card')} alt={settings.anchorName} />}
+            <figure className="about__portrait" data-reveal="portrait">
+              {mediaUrl(about.portrait) && (
+                <img src={mediaUrl(about.portrait, 'card')} alt={settings.anchorName} />
+              )}
               <figcaption>
                 <span>{settings.anchorName}</span>
                 <small>{settings.baseCity}</small>
               </figcaption>
             </figure>
-            <div className="about__copy" data-reveal>
+            <div className="about__copy" data-reveal="copy">
               <p className="eyebrow">{about.kicker}</p>
               <h2 className="h2">
                 <Accent text={about.heading} />
@@ -152,16 +173,22 @@ export default async function HomePage() {
         {/* SERVICES */}
         <section id="services" className="section services">
           <div className="container">
-            <div className="section__head" data-reveal>
+            <div className="section__head" data-reveal="heading">
               <p className="eyebrow">Ceremonies</p>
               <h2 className="h2">
                 <Accent text={home.servicesHeading} />
               </h2>
             </div>
-            <div className="services__grid">
+            <div className="services__grid" data-reveal-group>
               {home.services?.map((s, i) => (
-                <article key={i} className={`service service--${s.accent ?? 'gold'}`} data-reveal>
-                  {mediaUrl(s.image) && <img src={mediaUrl(s.image, 'card')} alt="" loading="lazy" />}
+                <article
+                  key={i}
+                  className={`service service--${s.accent ?? 'gold'}`}
+                  data-reveal="card"
+                >
+                  {mediaUrl(s.image) && (
+                    <img src={mediaUrl(s.image, 'card')} alt="" loading="lazy" />
+                  )}
                   <div className="service__body">
                     <span className="service__num">{String(i + 1).padStart(2, '0')}</span>
                     <h3>{s.title}</h3>
@@ -177,7 +204,7 @@ export default async function HomePage() {
         {reelCards.length > 0 && (
           <section id="moments" className="section moments">
             <div className="container">
-              <div className="section__head section__head--split" data-reveal>
+              <div className="section__head section__head--split" data-reveal="heading">
                 <div>
                   <p className="eyebrow">Moments</p>
                   <h2 className="h2">
@@ -195,18 +222,18 @@ export default async function HomePage() {
         {home.gallery && home.gallery.length > 0 && (
           <section id="gallery" className="section gallery">
             <div className="container">
-              <div className="section__head" data-reveal>
+              <div className="section__head" data-reveal="heading">
                 <p className="eyebrow">Gallery</p>
                 <h2 className="h2">
                   <Accent text={home.galleryHeading} />
                 </h2>
               </div>
-              <div className="gallery__grid">
+              <div className="gallery__grid" data-reveal-group>
                 {home.gallery.map((g, i) => {
                   const m = asMedia(g.image)
                   if (!m) return null
                   return (
-                    <figure key={i} className="gallery__item" data-reveal>
+                    <figure key={i} className="gallery__item" data-reveal="photo">
                       <img
                         src={mediaUrl(m, 'card')}
                         alt={m.alt}
@@ -227,7 +254,7 @@ export default async function HomePage() {
         {games.heading && (
           <section id="games" className="section games">
             <div className="container games__grid">
-              <div className="games__copy" data-reveal>
+              <div className="games__copy" data-reveal="copy">
                 <p className="games__alert">🚨 {games.kicker}</p>
                 <h2 className="h2">
                   <Accent text={games.heading} />
@@ -241,7 +268,7 @@ export default async function HomePage() {
                   </ul>
                 )}
               </div>
-              <div className="games__phone" data-reveal>
+              <div className="games__phone" data-reveal="feature">
                 <BgVideo src={mediaUrl(games.video)} poster={mediaUrl(games.poster, 'card')} />
               </div>
             </div>
@@ -250,18 +277,20 @@ export default async function HomePage() {
 
         {/* DESTINATIONS */}
         {home.destinations && home.destinations.length > 0 && (
-          <section className="section destinations">
+          <section id="destinations" className="section destinations">
             <div className="container">
-              <div className="section__head" data-reveal>
+              <div className="section__head" data-reveal="heading">
                 <p className="eyebrow">Where we’ve celebrated</p>
                 <h2 className="h2">
                   <Accent text={home.destinationsHeading} />
                 </h2>
               </div>
-              <div className="destinations__grid">
+              <div className="destinations__grid" data-reveal-group>
                 {home.destinations.map((d, i) => (
-                  <figure key={i} className="destination" data-reveal>
-                    {mediaUrl(d.image) && <img src={mediaUrl(d.image, 'card')} alt="" loading="lazy" />}
+                  <figure key={i} className="destination" data-reveal="photo">
+                    {mediaUrl(d.image) && (
+                      <img src={mediaUrl(d.image, 'card')} alt="" loading="lazy" />
+                    )}
                     <figcaption>
                       <strong>{d.city}</strong>
                       {d.venue && <span>{d.venue}</span>}
@@ -277,15 +306,15 @@ export default async function HomePage() {
         {testimonials.length > 0 && (
           <section id="love" className="section love">
             <div className="container">
-              <div className="section__head" data-reveal>
+              <div className="section__head" data-reveal="heading">
                 <p className="eyebrow">Kind words</p>
                 <h2 className="h2">
                   <Accent text={home.testimonialsHeading} />
                 </h2>
               </div>
-              <div className="love__grid">
+              <div className="love__grid" data-reveal-group>
                 {testimonials.map((t) => (
-                  <blockquote key={t.id} className="quote" data-reveal>
+                  <blockquote key={t.id} className="quote" data-reveal="quote">
                     <span className="quote__mark" aria-hidden>
                       “
                     </span>
@@ -307,7 +336,7 @@ export default async function HomePage() {
         {/* CONTACT */}
         <section id="contact" className="section contact">
           <div className="container contact__grid">
-            <div className="contact__copy" data-reveal>
+            <div className="contact__copy" data-reveal="copy">
               <p className="eyebrow">Bookings</p>
               <h2 className="h2">
                 <Accent text={contact.heading} />
@@ -316,7 +345,12 @@ export default async function HomePage() {
               <ul className="contact__direct">
                 {whatsapp && (
                   <li>
-                    <a href={whatsapp} target="_blank" rel="noreferrer" className="btn btn--whatsapp">
+                    <a
+                      href={whatsapp}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn btn--whatsapp"
+                    >
                       <WhatsAppIcon size={20} />
                       Chat on WhatsApp
                     </a>
@@ -338,7 +372,7 @@ export default async function HomePage() {
                 )}
               </ul>
             </div>
-            <div className="contact__card" data-reveal>
+            <div className="contact__card">
               <InquiryForm
                 eventTypes={eventTypes}
                 successMessage={contact.successMessage || 'Thank you! We’ll be in touch soon.'}
@@ -357,7 +391,10 @@ export default async function HomePage() {
       <footer className="footer">
         <div className="container footer__inner">
           <div>
-            <p className="footer__brand">{settings.brandName}</p>
+            <p className="footer__brand">
+              <BrandMark src={logo} className="footer__logo" />
+              {settings.brandName}
+            </p>
             <p className="muted">
               {settings.anchorName} · {settings.role}
             </p>

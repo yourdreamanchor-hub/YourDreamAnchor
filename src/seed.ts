@@ -38,7 +38,7 @@ async function upload(filePath: string, alt: string) {
 
 payload.logger.info('Uploading photos…')
 const img = {
-  logo: await upload(still('logo-avatar.jpg'), 'Akshay R Takalkar'),
+  logo: await upload(path.resolve('public/brand/anchor-monogram-v1.svg'), 'Your Dream Anchor monogram'),
   portrait: await upload(photo('DTVrrtZko90_01'), 'Akshay R Takalkar hosting with a microphone'),
   anchor: await upload(photo('DXwrp41ElaJ_03'), 'Akshay singing to the crowd'),
   haldi: await upload(photo('DRZoPOqGP-P_13'), 'Akshay dancing with the haldi crowd in yellow'),
@@ -210,9 +210,8 @@ await payload.updateGlobal({
   data: {
     hero: {
       eyebrow: 'Wedding & Event Anchor',
-      headline: 'Every celebration deserves a *voice.*',
-      subheadline:
-        'Akshay R Takalkar hosts haldis, sangeets and weddings across India with games, music and the kind of energy that keeps every family on the dance floor.',
+      headline: 'Akshay R Takalkar',
+      subheadline: '',
       video: heroVideo,
       poster: heroPoster,
       primaryLabel: 'Check your date',

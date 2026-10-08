@@ -32,15 +32,26 @@ export const HomePage: GlobalConfig = {
               name: 'hero',
               type: 'group',
               fields: [
-                { name: 'eyebrow', type: 'text', defaultValue: 'Wedding & Event Anchor' },
+                {
+                  name: 'eyebrow',
+                  label: 'Short role',
+                  type: 'text',
+                  defaultValue: 'Wedding & Event Anchor',
+                },
                 {
                   name: 'headline',
+                  label: 'Name or title',
                   type: 'text',
                   required: true,
-                  defaultValue: 'Every celebration deserves a voice.',
-                  admin: { description: 'Wrap a word in *asterisks* to show it in gold italics.' },
+                  defaultValue: 'Akshay R Takalkar',
+                  admin: { description: 'Keep this short so the video has room to breathe. Wrap a word in *asterisks* to show it in gold italics.' },
                 },
-                { name: 'subheadline', type: 'textarea' },
+                {
+                  name: 'subheadline',
+                  label: 'Optional supporting line',
+                  type: 'textarea',
+                  admin: { description: 'One short line beneath the name and role, if needed.' },
+                },
                 {
                   type: 'row',
                   fields: [
@@ -65,9 +76,10 @@ export const HomePage: GlobalConfig = {
             },
             {
               name: 'marquee',
+              label: 'Below the hero',
               type: 'array',
               labels: { singular: 'Word', plural: 'Words' },
-              admin: { description: 'The scrolling strip under the hero.' },
+              admin: { description: 'The celebration and destination labels beneath the hero.' },
               fields: [{ name: 'text', type: 'text', required: true }],
             },
           ],

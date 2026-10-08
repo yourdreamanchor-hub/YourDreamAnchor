@@ -9,6 +9,17 @@ const dirname = path.dirname(__filename)
 const nextConfig: NextConfig = {
   // Lets the test server build into its own folder alongside a running dev server.
   distDir: process.env.NEXT_DIST_DIR || '.next',
+  headers: async () =>
+    [
+      '/media/hero-quality-v1.mp4',
+      '/media/hero-quality-v1-poster.jpg',
+      '/brand/anchor-monogram-v1.svg',
+      '/brand/anchor-icon-v1.svg',
+      '/brand/anchor-apple-icon-v1.png',
+    ].map((source) => ({
+      source,
+      headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+    })),
   images: {
     localPatterns: [
       {

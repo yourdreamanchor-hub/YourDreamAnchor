@@ -32,11 +32,47 @@ pnpm dev
 
 Saved changes appear on the site immediately. In headings, wrap a word in `*asterisks*` to show it in gold italics.
 
+The hero gives the footage most of the screen, with a compact name and role near the bottom.
+Under **Pages → Home page → Hero**, edit **Name or title**, **Short role**, and the two action
+labels. The supporting line is optional and is currently empty to keep the opening uncluttered.
+
+The white monogram is traced from the supplied `IMG_4572.jpg` reference. Its four exact vector
+strokes live in `src/lib/brand.ts`; run `pnpm exec tsx scripts/build-brand-assets.ts` to regenerate
+the transparent SVG and dark browser/home-screen icons in `public/brand/`. No generated raster
+variant is used. The logo appears in the loading intro, scrolled header and footer. The header
+shows `YourDreamAnchor` at the top. Over 40–400 px of scrolling, its actual letter contours
+gradually become fifteen adjoining pieces of the monogram; scrolling up reverses the formation
+without shifting the navigation links. Reduced-motion visitors get the finished state directly.
+
+`src/lib/brand-morph-data.json` contains the existing Fraunces glyphs and their target geometry;
+no font parser or animation dependency runs in the browser. To rebuild it after changing the
+typeface, install Python's `fonttools` and `brotli`, build once to download the site's fonts, then
+run `python3 scripts/build-brand-morph.py <regular-Latin-Fraunces.woff2>` using the font in
+`.next/static/media/`. The contour generator retains the font's copyright and license URL.
+
+The opening draws the monogram once per homepage load and waits for the opening poster/frame
+and fonts, with a 2-second wait limit and a 320 ms fade. A CSS fallback also clears the overlay
+without JavaScript. Keyboard, pointer or scroll input dismisses it immediately; reduced-motion
+visitors, deep links and restored scroll positions bypass it. It never locks scrolling or focus.
+Select a different **Settings → Site settings → Logo** upload to use that logo throughout; its
+intro uses a simple reveal rather than the original monogram's stroke drawing.
+
 Videos: upload MP4 (H.264), ideally under 20 MB. To shrink one:
 
 ```bash
 ffmpeg -i input.mp4 -vf "scale='min(720,iw)':-2" -c:v libx264 -crf 28 -maxrate 1200k -bufsize 2400k -c:a aac -b:a 96k -movflags +faststart output.mp4
 ```
+
+The approved homepage film is bundled in `public/media/hero-quality-v1.mp4` with its matching
+poster. It is the reviewed 12-second H.264 export: 1280 × 576, 30 fps, about 7.8 Mbps and 11.7 MB,
+without audio. It was re-exported from seconds 4–16 of `media-import/instagram/DeKEPSoRU0I.mp4`
+(1080 × 608 source), with Lanczos scaling and CRF 17. This improves compression quality; it is
+not native 1080p or an AI upscale. Do not recompress it with the low-bitrate example above.
+
+`src/lib/hero-media.ts` substitutes this export only for the original `hero-loop.mp4` and
+`hero-loop-1.mp4` CMS uploads. Selecting a differently named video in the admin uses that upload
+and its selected poster normally. The bundled files have versioned names and long-lived caching;
+use a new filename and update the resolver and cache paths when replacing the bundled export.
 
 ## Changing the content model
 
@@ -59,7 +95,7 @@ pnpm test:e2e   # home page, reel lightbox, privacy page, admin panel
 
 ## Deploying
 
-Supabase hosts the database **and** the photos/videos; Vercel hosts the website.
+Supabase hosts the database and uploaded photos/videos; Vercel hosts the website and the bundled hero film.
 
 1. **Supabase → database.** Project → **Connect** → *Connection string* → **Transaction pooler** (port 6543).
    Fill in your database password → `DATABASE_URL`.

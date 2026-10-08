@@ -1,0 +1,17 @@
+{
+  "source": "media-import/instagram/DeKEPSoRU0I.mp4",
+  "sourceDimensions": [1080, 608],
+  "sourceStartSeconds": 4,
+  "durationSeconds": 12,
+  "output": "ui-demos/assets/hero-source-quality.mp4",
+  "dimensions": [1280, 576],
+  "bytes": 11699314,
+  "videoBitrate": 7795974,
+  "encoder": "libx264",
+  "preset": "slow",
+  "crf": 17,
+  "filters": "scale=1280:720:flags=lanczos,crop=1280:576:0:0,setsar=1",
+  "audio": false,
+  "aiUpscaling": false,
+  "notes": "Re-exported from the existing source; modest improvement only. Not native 1080p. This separate preview does not replace the website media."
+}

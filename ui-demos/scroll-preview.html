@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Your Dream Anchor — Original design, polished motion</title>
+    <style>
+      @font-face {
+        font-family: Manrope;
+        src: url('assets/manrope.woff2') format('woff2');
+        font-weight: 200 800;
+        font-display: swap;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #0d0812;
+        color: #f6eee2;
+        font:
+          13px/1.6 Manrope,
+          system-ui,
+          sans-serif;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 18px 24px;
+        border-bottom: 1px solid #34283f;
+      }
+      strong {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      header p {
+        margin: 3px 0 0;
+        color: #b8a9bf;
+        font-size: 11px;
+      }
+      nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      button,
+      a {
+        font: inherit;
+        color: inherit;
+      }
+      button {
+        background: none;
+        border: 1px solid #4b3a56;
+        padding: 9px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      button[aria-pressed='true'] {
+        background: #e9b64e;
+        border-color: #e9b64e;
+        color: #1a0f05;
+      }
+      a {
+        text-underline-offset: 4px;
+        margin-left: 8px;
+        font-size: 11px;
+        color: #e9b64e;
+      }
+      :focus-visible {
+        outline: 2px solid #e9b64e;
+        outline-offset: 4px;
+      }
+      main {
+        padding: 22px 24px 30px;
+      }
+      .screen {
+        position: relative;
+        margin: auto;
+        overflow: hidden;
+        max-width: 1440px;
+        background: #0d0812;
+        border: 1px solid #34283f;
+        border-radius: 8px;
+      }
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 0;
+        transform-origin: top left;
+        max-width: none;
+        background: #0d0812;
+      }
+      .hint {
+        margin: 15px 0 0;
+        text-align: center;
+        color: #b8a9bf;
+        font-size: 11px;
+      }
+      @media (max-width: 720px) {
+        header {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 15px;
+          padding: 17px;
+        }
+        main {
+          padding: 17px;
+        }
+        button {
+          padding: 8px 12px;
+        }
+        nav {
+          gap: 6px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <strong>Your Dream Anchor · Motion preview</strong>
+        <p>The original dark-and-gold design, with the new scroll treatment.</p>
+      </div>
+      <nav aria-label="Preview controls">
+        <button data-size="desktop" aria-pressed="true">Desktop</button>
+        <button data-size="phone" aria-pressed="false">Phone</button>
+        <button id="view-strip">View hero strip</button>
+        <button id="restart">Replay from the top</button>
+        <a href="http://localhost:3000/" target="_blank" rel="noopener">Open full website ↗</a>
+      </nav>
+    </header>
+    <main>
+      <div class="screen">
+        <iframe
+          id="site-preview"
+          title="Original website with polished scroll motion"
+          src="http://localhost:3000/"
+          width="1440"
+          height="900"
+        ></iframe>
+      </div>
+      <p class="hint">
+        Scroll inside the preview. Choose Phone to check the menu, photographs and reels at 390 px.
+      </p>
+    </main>
+    <script>
+      const screen = document.querySelector('.screen')
+      const frame = document.querySelector('#site-preview')
+      let device = 'desktop'
+      function resize() {
+        const width = device === 'phone' ? 390 : 1440
+        const height = device === 'phone' ? 844 : 900
+        const scale = Math.min(1, screen.clientWidth / width)
+        frame.width = width
+        frame.height = height
+        frame.style.width = width + 'px'
+        frame.style.height = height + 'px'
+        frame.style.transform = `scale(${scale})`
+        frame.style.left = Math.max(0, (screen.clientWidth - width * scale) / 2) + 'px'
+        screen.style.height = height * scale + 'px'
+      }
+      document.querySelectorAll('[data-size]').forEach((button) =>
+        button.addEventListener('click', () => {
+          device = button.dataset.size
+          document
+            .querySelectorAll('[data-size]')
+            .forEach((item) => item.setAttribute('aria-pressed', String(item === button)))
+          resize()
+        }),
+      )
+      document.querySelector('#restart').addEventListener('click', () => {
+        frame.src = 'http://localhost:3000/'
+      })
+      document.querySelector('#view-strip').addEventListener('click', () => {
+        frame.src = 'http://localhost:3000/#celebrations'
+      })
+      new ResizeObserver(resize).observe(screen)
+      resize()
+    </script>
+  </body>
+</html>

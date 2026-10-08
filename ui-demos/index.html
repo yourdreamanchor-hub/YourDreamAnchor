@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Your Dream Anchor — Compare the UI demos</title>
+    <meta name="theme-color" content="#f4f1eb" />
+    <style>
+      @font-face {
+        font-family: Fraunces;
+        src: url('assets/fraunces-roman.woff2') format('woff2');
+        font-weight: 100 900;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: Manrope;
+        src: url('assets/manrope.woff2') format('woff2');
+        font-weight: 200 800;
+        font-display: swap;
+      }
+      :root {
+        --paper: #f4f1eb;
+        --ink: #2d342f;
+        --muted: #62665d;
+        --line: #d5d4ca;
+        --wine: #6b3049;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font:
+          14px/1.65 Manrope,
+          sans-serif;
+        background: var(--paper);
+        color: var(--ink);
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: inherit;
+        text-underline-offset: 5px;
+      }
+      button {
+        font: inherit;
+        cursor: pointer;
+        color: inherit;
+      }
+      svg {
+        width: 17px;
+        height: 17px;
+      }
+      ::selection {
+        color: var(--paper);
+        background: var(--wine);
+      }
+      :focus-visible {
+        outline: 2px solid var(--wine);
+        outline-offset: 4px;
+      }
+      html {
+        scrollbar-color: var(--wine) var(--paper);
+      }
+      .desk {
+        padding: 29px clamp(22px, 4vw, 62px) 60px;
+        max-width: 1800px;
+        margin: auto;
+      }
+      .desk-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 25px;
+        padding-bottom: 21px;
+        border-bottom: 1px solid var(--line);
+      }
+      .wordmark {
+        font:
+          22px Fraunces,
+          Georgia,
+          serif;
+        letter-spacing: -0.025em;
+      }
+      .desk-header span:last-child {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .intro {
+        display: grid;
+        grid-template-columns: 1.3fr 0.7fr;
+        gap: 70px;
+        padding: 36px 0 29px;
+        align-items: center;
+      }
+      h1 {
+        font:
+          400 clamp(36px, 4vw, 59px)/1.09 Fraunces,
+          Georgia,
+          serif;
+        letter-spacing: -0.03em;
+        margin: 0 0 17px;
+        max-width: 18ch;
+        text-wrap: balance;
+      }
+      .intro p {
+        color: var(--muted);
+        margin: 0;
+        font-size: 13px;
+        max-width: 58ch;
+      }
+      .recommendation {
+        padding-left: 25px;
+        border-left: 1px solid var(--line);
+      }
+      .recommendation strong {
+        display: block;
+        font-size: 12px;
+        color: var(--wine);
+        margin-bottom: 8px;
+      }
+      .recommendation p {
+        font-size: 12px;
+        line-height: 1.8;
+      }
+      .controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding-block: 22px;
+        border-block: 1px solid var(--line);
+        margin-bottom: 24px;
+      }
+      .control-group {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .control-group > span {
+        font-size: 10px;
+        color: var(--muted);
+        margin-right: 9px;
+      }
+      .controls button {
+        min-height: 42px;
+        padding: 9px 16px;
+        border: 1px solid transparent;
+        border-radius: 3px;
+        font-size: 11px;
+        background: none;
+      }
+      .controls button[aria-pressed='true'] {
+        border-color: var(--ink);
+        background: var(--ink);
+        color: var(--paper);
+      }
+      .controls button:hover:not([aria-pressed='true']) {
+        border-color: var(--line);
+        background: #e9e5dc;
+      }
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 25px;
+        align-items: start;
+      }
+      .workspace[data-view='warm'],
+      .workspace[data-view='dark'] {
+        grid-template-columns: 1fr;
+      }
+      .workspace[data-view='warm'] [data-theme='dark'],
+      .workspace[data-view='dark'] [data-theme='warm'] {
+        display: none;
+      }
+      .option {
+        min-width: 0;
+      }
+      .option-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding-bottom: 13px;
+      }
+      .option-name {
+        font-size: 14px;
+        font-weight: 650;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .colour {
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+        border-radius: 50%;
+        background: var(--wine);
+      }
+      [data-theme='dark'] .colour {
+        background: #9a7f42;
+      }
+      .option-header a {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        min-height: 42px;
+        font-size: 10px;
+        text-decoration: none;
+        border-bottom: 1px solid var(--line);
+      }
+      .option-header a:hover {
+        color: var(--wine);
+        border-color: var(--wine);
+      }
+      .window {
+        border: 1px solid var(--line);
+        background: #e8e3db;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      .window-top {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+      }
+      .window-top i {
+        width: 5px;
+        height: 5px;
+        background: #bab7af;
+        border-radius: 50%;
+        display: block;
+      }
+      .window-top span {
+        font-size: 8px;
+        color: var(--muted);
+        margin-left: 8px;
+      }
+      .screen {
+        position: relative;
+        width: 100%;
+        height: 420px;
+        overflow: hidden;
+        background: #e8e3db;
+      }
+      .screen iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 0;
+        transform-origin: top left;
+        max-width: none;
+        background: var(--paper);
+      }
+      .option-caption {
+        padding-top: 18px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+      }
+      .option-caption p {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 0;
+      }
+      .option-caption strong {
+        color: var(--ink);
+        font-size: 11px;
+        display: block;
+        margin-bottom: 7px;
+        font-weight: 650;
+      }
+      .how-to {
+        margin-top: 38px;
+        padding-top: 23px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        flex-wrap: wrap;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .how-to p {
+        margin: 0;
+      }
+      .how-to a {
+        color: var(--wine);
+      }
+      .status {
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: 15px;
+      }
+      .visually-hidden {
+        position: absolute;
+        clip: rect(0, 0, 0, 0);
+        clip-path: inset(50%);
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      @media (max-width: 760px) {
+        .intro {
+          grid-template-columns: 1fr;
+          gap: 25px;
+          padding-block: 30px;
+        }
+        .recommendation {
+          padding-left: 18px;
+        }
+        .intro p {
+          font-size: 12px;
+        }
+        .controls {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 10px;
+          padding-block: 17px;
+        }
+        .controls button {
+          padding-inline: 13px;
+          font-size: 10px;
+        }
+        .control-group > span {
+          font-size: 9px;
+        }
+        .workspace {
+          grid-template-columns: 1fr;
+          gap: 37px;
+        }
+        .option-caption {
+          gap: 20px;
+        }
+        .option-caption p {
+          font-size: 11px;
+        }
+        .desk-header span:last-child {
+          font-size: 9px;
+        }
+        .wordmark {
+          font-size: 20px;
+        }
+        .option-header {
+          gap: 15px;
+        }
+        .option-name {
+          font-size: 13px;
+        }
+        .option-header a {
+          font-size: 9px;
+        }
+        .how-to {
+          font-size: 10px;
+          gap: 17px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          scroll-behavior: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="desk">
+      <header class="desk-header">
+        <span class="wordmark">Your Dream Anchor</span><span>A little design exploration.</span>
+      </header>
+      <main>
+        <div class="intro">
+          <div>
+            <h1>Two ways to<br />set the stage.</h1>
+            <p>
+              The existing site has a strong personality. These demos explore a calmer first
+              impression, earlier proof of Akshay’s hosting, and a clearer path to a date enquiry.
+            </p>
+          </div>
+          <aside class="recommendation">
+            <strong>The original design is retained.</strong>
+            <p>
+              These two alternatives are saved for comparison. The selected dark-and-gold website
+              now includes the refined header, logo formation, scroll motion and four-film hero.
+            </p>
+          </aside>
+        </div>
+        <div class="controls">
+          <div class="control-group" role="group" aria-label="Choose designs to compare">
+            <span>Show</span><button data-view="both" aria-pressed="true">Both designs</button
+            ><button data-view="warm" aria-pressed="false">The Wedding Edit</button
+            ><button data-view="dark" aria-pressed="false">After Hours</button>
+          </div>
+          <div class="control-group" role="group" aria-label="Preview screen size">
+            <span>Preview</span
+            ><button data-device="desktop" aria-pressed="true">Desktop · 1440 px</button
+            ><button data-device="phone" aria-pressed="false">Phone · 390 px</button>
+          </div>
+        </div>
+        <div class="workspace" data-view="both" data-device="desktop">
+          <article class="option" data-theme="warm">
+            <div class="option-header">
+              <span class="option-name"
+                ><i class="colour" aria-hidden="true"></i>The Wedding Edit</span
+              ><a href="01-warm-editorial.html" target="_blank" rel="noopener"
+                >Open full demo
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path
+                    d="M6 18 18 6M6 6h12v12"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  /></svg
+              ></a>
+            </div>
+            <div class="window">
+              <div class="window-top" aria-hidden="true">
+                <i></i><i></i><i></i><span>Warm editorial / personal, graceful, welcoming</span>
+              </div>
+              <div class="screen">
+                <iframe
+                  title="The Wedding Edit interactive preview"
+                  src="01-warm-editorial.html?embed=1"
+                  width="1440"
+                  height="1000"
+                ></iframe>
+              </div>
+            </div>
+            <div class="option-caption">
+              <p>
+                <strong>What changes</strong>Ivory, wine and forest green. An intimate photo
+                composition, readable copy, a simple ceremony list and a quieter booking flow.
+              </p>
+              <p>
+                <strong>Why choose it</strong>A personal introduction for couples and families. Its
+                first screen favours photography; the performance comes through in the playable
+                reels.
+              </p>
+            </div>
+          </article>
+          <article class="option" data-theme="dark">
+            <div class="option-header">
+              <span class="option-name"><i class="colour" aria-hidden="true"></i>After Hours</span
+              ><a href="02-cinematic.html" target="_blank" rel="noopener"
+                >Open full demo
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path
+                    d="M6 18 18 6M6 6h12v12"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  /></svg
+              ></a>
+            </div>
+            <div class="window">
+              <div class="window-top" aria-hidden="true">
+                <i></i><i></i><i></i
+                ><span>Refined cinematic / expressive, energetic, atmospheric</span>
+              </div>
+              <div class="screen">
+                <iframe
+                  title="After Hours interactive preview"
+                  src="02-cinematic.html?embed=1"
+                  width="1440"
+                  height="1000"
+                ></iframe>
+              </div>
+            </div>
+            <div class="option-caption">
+              <p>
+                <strong>What changes</strong>Warm charcoal and champagne. A separate film stage, a
+                date-and-city entry point, a feature reel and a generous gold contact section.
+              </p>
+              <p>
+                <strong>Why choose it</strong>A stronger performance-led introduction for sangeets
+                and evening events. Film has more presence; visitors can pause it or watch a reel
+                with sound.
+              </p>
+            </div>
+          </article>
+        </div>
+        <p class="status" role="status" id="preview-status">
+          Showing both designs at desktop size. Scroll inside a preview, or open a full demo.
+        </p>
+        <div class="how-to">
+          <p>
+            <strong>Try it:</strong> filter the moments, play a reel, open the phone menu, and
+            preview an enquiry. The forms send nothing.
+          </p>
+          <p>
+            Open either HTML file directly. Keep the <strong>assets</strong> folder beside it.
+            <a href="README.md">Run instructions</a>
+          </p>
+        </div>
+      </main>
+    </div>
+    <script>
+      ;(() => {
+        const workspace = document.querySelector('.workspace')
+        const status = document.querySelector('#preview-status')
+        const screens = [...document.querySelectorAll('.screen')]
+        let view = 'both'
+        let device = 'desktop'
+        function resize() {
+          const width = device === 'phone' ? 390 : 1440
+          const height = device === 'phone' ? 844 : 1000
+          screens.forEach((screen) => {
+            if (!screen.clientWidth) return
+            const scale = Math.min(1, screen.clientWidth / width)
+            const frame = screen.querySelector('iframe')
+            frame.width = width
+            frame.height = height
+            frame.style.width = width + 'px'
+            frame.style.height = height + 'px'
+            frame.style.transform = `scale(${scale})`
+            frame.style.left = Math.max(0, (screen.clientWidth - width * scale) / 2) + 'px'
+            screen.style.height = height * scale + 'px'
+          })
+        }
+        function updateStatus() {
+          const name =
+            view === 'both' ? 'both designs' : view === 'warm' ? 'The Wedding Edit' : 'After Hours'
+          status.textContent = `Showing ${name} at ${device === 'phone' ? 'phone' : 'desktop'} size. Scroll inside a preview, or open a full demo.`
+        }
+        document.querySelectorAll('button[data-view]').forEach((button) =>
+          button.addEventListener('click', () => {
+            view = button.dataset.view
+            workspace.dataset.view = view
+            document
+              .querySelectorAll('button[data-view]')
+              .forEach((item) => item.setAttribute('aria-pressed', String(item === button)))
+            resize()
+            updateStatus()
+          }),
+        )
+        document.querySelectorAll('button[data-device]').forEach((button) =>
+          button.addEventListener('click', () => {
+            device = button.dataset.device
+            workspace.dataset.device = device
+            document
+              .querySelectorAll('button[data-device]')
+              .forEach((item) => item.setAttribute('aria-pressed', String(item === button)))
+            resize()
+            updateStatus()
+          }),
+        )
+        const observer = new ResizeObserver(resize)
+        screens.forEach((screen) => observer.observe(screen))
+        resize()
+      })()
+    </script>
+  </body>
+</html>

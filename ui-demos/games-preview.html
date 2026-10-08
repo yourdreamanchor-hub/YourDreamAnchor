@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Your Dream Anchor — Games background preview</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #0d0812;
+        color: #f6eee2;
+        font:
+          13px/1.5 system-ui,
+          sans-serif;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 15px 24px;
+        border-bottom: 1px solid #34283f;
+      }
+      strong {
+        font-weight: 600;
+      }
+      nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      button,
+      a {
+        font: inherit;
+        color: inherit;
+      }
+      button {
+        background: none;
+        border: 1px solid #4b3a56;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      button[aria-pressed='true'] {
+        background: #e9b64e;
+        border-color: #e9b64e;
+        color: #1a0f05;
+      }
+      a {
+        text-underline-offset: 4px;
+        color: #e9b64e;
+        font-size: 11px;
+        margin-left: 8px;
+      }
+      :focus-visible {
+        outline: 2px solid #e9b64e;
+        outline-offset: 4px;
+      }
+      main {
+        padding: 18px 24px;
+      }
+      .screen {
+        position: relative;
+        margin: auto;
+        overflow: hidden;
+        width: 100%;
+        background: #0d0812;
+      }
+      iframe {
+        position: absolute;
+        top: 0;
+        border: 0;
+        transform-origin: top left;
+        max-width: none;
+        background: #0d0812;
+      }
+      @media (max-width: 720px) {
+        header {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 12px;
+          padding: 15px;
+        }
+        main {
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>Games · Celebration background</strong>
+      <nav aria-label="Preview controls">
+        <button data-size="desktop" aria-pressed="true">Desktop</button>
+        <button data-size="phone" aria-pressed="false">Phone</button>
+        <button id="full-section" aria-pressed="false">Full section</button>
+        <button id="view-games">View games</button>
+        <a href="http://localhost:3000/#games" target="_blank" rel="noopener">Open website ↗</a>
+      </nav>
+    </header>
+    <main>
+      <div class="screen">
+        <iframe
+          id="games-preview"
+          title="Games section on the website"
+          src="http://localhost:3000/#games"
+          width="1440"
+          height="1000"
+        ></iframe>
+      </div>
+    </main>
+    <script>
+      const screen = document.querySelector('.screen')
+      const frame = document.querySelector('#games-preview')
+      let device = 'desktop'
+      let fullSection = false
+      function resize() {
+        const width = device === 'phone' ? 390 : 1440
+        const height = device === 'phone' ? (fullSection ? 1400 : 844) : 1000
+        const scale = Math.min(
+          1,
+          screen.clientWidth / width,
+          Math.max(300, window.innerHeight - 120) / height,
+        )
+        frame.width = width
+        frame.height = height
+        frame.style.width = width + 'px'
+        frame.style.height = height + 'px'
+        frame.style.transform = `scale(${scale})`
+        frame.style.left = Math.max(0, (screen.clientWidth - width * scale) / 2) + 'px'
+        screen.style.height = height * scale + 'px'
+      }
+      document.querySelectorAll('[data-size]').forEach((button) =>
+        button.addEventListener('click', () => {
+          device = button.dataset.size
+          document
+            .querySelectorAll('[data-size]')
+            .forEach((item) => item.setAttribute('aria-pressed', String(item === button)))
+          resize()
+        }),
+      )
+      document.querySelector('#full-section').addEventListener('click', (event) => {
+        fullSection = !fullSection
+        event.currentTarget.setAttribute('aria-pressed', String(fullSection))
+        resize()
+      })
+      document.querySelector('#view-games').addEventListener('click', () => {
+        frame.src = `http://localhost:3000/?games-preview=${device}-${fullSection ? 'full' : 'viewport'}#games`
+      })
+      new ResizeObserver(resize).observe(screen)
+      resize()
+    </script>
+  </body>
+</html>

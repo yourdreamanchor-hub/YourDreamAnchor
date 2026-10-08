@@ -57,3 +57,8 @@ node_modules/
 
 # test server build output
 /.next-test/
+
+# Local preview captures, font tooling and temporary CMS snapshots
+/ui-demos/previews/
+/ui-demos/tools/
+/ui-demos/*-before-*.json

@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Your Dream Anchor — Video quality comparison</title>
+    <meta name="theme-color" content="#0d0812" />
+    <style>
+      @font-face {
+        font-family: Fraunces;
+        src: url('assets/fraunces-roman.woff2') format('woff2');
+        font-weight: 100 900;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: Manrope;
+        src: url('assets/manrope.woff2') format('woff2');
+        font-weight: 200 800;
+        font-display: swap;
+      }
+      :root {
+        --bg: #0d0812;
+        --panel: #1d1427;
+        --ink: #f6eee2;
+        --muted: #b8a9bf;
+        --gold: #e9b64e;
+        --line: #493751;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          14px/1.7 Manrope,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      main {
+        width: min(1400px, 100%);
+        margin: auto;
+        padding: 30px clamp(20px, 4vw, 60px) 60px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding-bottom: 22px;
+        border-bottom: 1px solid var(--line);
+      }
+      header strong {
+        font:
+          24px Fraunces,
+          Georgia,
+          serif;
+      }
+      a {
+        color: var(--gold);
+        text-underline-offset: 4px;
+        font-size: 12px;
+      }
+      h1 {
+        font:
+          400 clamp(34px, 4.7vw, 62px)/1.1 Fraunces,
+          Georgia,
+          serif;
+        letter-spacing: -0.025em;
+        margin: 35px 0 18px;
+        text-wrap: balance;
+      }
+      p {
+        margin: 0;
+        color: var(--muted);
+        max-width: 76ch;
+      }
+      button {
+        font: inherit;
+        cursor: pointer;
+        min-height: 46px;
+      }
+      ::selection {
+        background: var(--gold);
+        color: var(--bg);
+      }
+      :focus-visible {
+        outline: 2px solid var(--gold);
+        outline-offset: 5px;
+      }
+      .controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin: 26px 0 18px;
+      }
+      .choices {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .choices button {
+        padding: 11px 18px;
+        color: var(--ink);
+        background: transparent;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 650;
+      }
+      .choices button[aria-pressed='true'] {
+        background: var(--gold);
+        color: var(--bg);
+        border-color: var(--gold);
+      }
+      .choices button:hover:not([aria-pressed='true']) {
+        background: var(--panel);
+      }
+      .selected {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .stage {
+        background: #050407;
+        overflow: hidden;
+        border-radius: 5px;
+      }
+      .stage video {
+        display: block;
+        width: 100%;
+        aspect-ratio: 20/9;
+        object-fit: contain;
+        max-height: 75svh;
+      }
+      .meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 35px;
+        margin-top: 26px;
+        padding-top: 23px;
+        border-top: 1px solid var(--line);
+      }
+      .meta strong {
+        display: block;
+        font-size: 13px;
+        color: var(--ink);
+        margin-bottom: 8px;
+      }
+      .meta p {
+        font-size: 12px;
+      }
+      .note {
+        margin-top: 28px;
+        background: var(--panel);
+        padding: 19px 23px;
+        border-radius: 5px;
+        font-size: 12px;
+      }
+      .note strong {
+        color: var(--gold);
+        font-weight: 650;
+      }
+      .links {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+        margin-top: 23px;
+      }
+      .player-status {
+        margin: 12px 0 0;
+        font-size: 11px;
+      }
+      .player-status:empty {
+        display: none;
+      }
+      @media (max-width: 600px) {
+        header strong {
+          font-size: 20px;
+        }
+        h1 {
+          font-size: 38px;
+        }
+        p {
+          font-size: 12px;
+        }
+        .controls {
+          gap: 14px;
+        }
+        .choices button {
+          font-size: 11px;
+          padding-inline: 13px;
+        }
+        .meta {
+          grid-template-columns: 1fr;
+          gap: 23px;
+        }
+        .note {
+          padding: 17px;
+          font-size: 11px;
+        }
+        .stage video {
+          aspect-ratio: 20/9;
+        }
+        .links a {
+          font-size: 11px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <strong>Your Dream Anchor</strong
+        ><a href="http://localhost:3000/" target="_blank" rel="noopener"
+          >Open the current website</a
+        >
+      </header>
+      <h1>A cleaner export.<br />An honest comparison.</h1>
+      <p>
+        Switch between the earlier lightweight hero video and the approved export made directly from
+        its best available source. Watch at full size to judge whether the difference is worth the
+        larger download.
+      </p>
+      <div class="controls">
+        <div class="choices" role="group" aria-label="Choose video version">
+          <button data-version="current" aria-pressed="true">Earlier lightweight export</button
+          ><button data-version="cleaner" aria-pressed="false">Cleaner source export</button>
+        </div>
+        <span class="selected" id="selected" role="status"
+          >Earlier lightweight export · 1280 × 576 · 2.57 MB</span
+        >
+      </div>
+      <div class="stage">
+        <video
+          id="video"
+          src="assets/hero.mp4"
+          poster="assets/hero.webp"
+          controls
+          muted
+          playsinline
+          loop
+          preload="metadata"
+          aria-label="Hero video quality comparison"
+        ></video>
+      </div>
+      <p class="player-status" id="player-status" role="status"></p>
+      <div class="meta">
+        <div>
+          <strong>What changed</strong>
+          <p>
+            The approved file uses a less compressed export from the existing 1080 × 608 source. No
+            sharpening, AI face reconstruction or colour treatment was added. It is a 12-second
+            sample of the same event; framing and exact timing may differ slightly.
+          </p>
+        </div>
+        <div>
+          <strong>What still limits the quality</strong>
+          <p>
+            Both files are displayed at 1280 × 576. The larger output does not add captured detail
+            to the 1080 × 608 source. Genuine Full HD or 4K camera footage would give the
+            full-screen hero more detail to work with.
+          </p>
+        </div>
+      </div>
+      <p class="note">
+        <strong>The reels have more room for improvement.</strong> Some current reel files are just
+        540 pixels wide, while their saved sources are 720 or 1080 pixels wide. Re-exporting those
+        from the saved sources can retain more of the existing detail.
+      </p>
+      <div class="links">
+        <a href="assets/hero-source-quality.mp4" download>Download the cleaner sample</a
+        ><a href="assets/hero.mp4" download>Download the earlier export</a>
+      </div>
+    </main>
+    <script>
+      ;(() => {
+        const video = document.querySelector('#video')
+        const status = document.querySelector('#player-status')
+        const versions = {
+          current: {
+            src: 'assets/hero.mp4',
+            poster: 'assets/hero.webp',
+            label: 'Earlier lightweight export · 1280 × 576 · 2.57 MB',
+          },
+          cleaner: {
+            src: 'assets/hero-source-quality.mp4',
+            poster: 'assets/hero-source-quality-poster.jpg',
+            label: 'Cleaner source export · 1280 × 576 · 11.70 MB',
+          },
+        }
+        document.querySelectorAll('[data-version]').forEach((button) =>
+          button.addEventListener('click', () => {
+            if (button.getAttribute('aria-pressed') === 'true') return
+            const version = versions[button.dataset.version]
+            const time = video.currentTime
+            const wasPlaying = !video.paused
+            video.pause()
+            document
+              .querySelectorAll('[data-version]')
+              .forEach((item) => item.setAttribute('aria-pressed', String(item === button)))
+            document.querySelector('#selected').textContent = version.label
+            status.textContent = ''
+            video.poster = version.poster
+            video.src = version.src
+            video.load()
+            video.addEventListener(
+              'loadedmetadata',
+              () => {
+                video.currentTime = Math.min(time, Math.max(0, video.duration - 0.05))
+                if (wasPlaying)
+                  video.play().catch(() => {
+                    status.textContent = 'Press play to continue the comparison.'
+                  })
+              },
+              { once: true },
+            )
+          }),
+        )
+        video.addEventListener('error', () => {
+          status.textContent =
+            'This local video could not load. Keep the assets folder beside this HTML file and try again.'
+        })
+      })()
+    </script>
+  </body>
+</html>

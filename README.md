@@ -19,6 +19,16 @@ pnpm dev
 - Website: http://localhost:3000
 - Admin: http://localhost:3000/admin (the first visit asks you to create the admin account)
 
+## Design demos and previews
+
+The runnable HTML comparisons and previews are saved in `ui-demos/`, with their media and
+font licenses. See [the demo instructions](ui-demos/README.md) to open them. The original
+dark-and-gold website is the selected design; the two alternative layouts remain archived
+for comparison. Hero, Games and scroll previews use the running website on port 3000.
+
+Preview screenshots, temporary CMS snapshots and local font tools are kept locally and
+ignored by Git. The production artwork, media, generators and source are versioned.
+
 ## What the admin can change
 
 | In the admin                     | Controls                                                                 |

@@ -17,6 +17,7 @@ import { gamesBackdrop, navigationLinks, selectedLogo } from '@/lib/site-content
 import { siteOrigin } from '@/lib/site-origin'
 import { heroFilms } from '@/lib/hero-media'
 import { whatsappDigits, whatsappUrl } from '@/lib/whatsapp'
+import { youtubeVideo } from '@/lib/youtube'
 
 export const revalidate = 60
 
@@ -39,8 +40,11 @@ export default async function HomePage() {
     location: r.location,
     caption: r.caption,
     video: mediaUrl(r.video),
-    poster: mediaUrl(r.poster, 'card'),
+    poster: mediaUrl(r.poster, r.mediaSource === 'youtube' ? 'wide' : 'card'),
     instagramUrl: r.instagramUrl,
+    mediaSource: r.mediaSource ?? 'upload',
+    youtubeUrl: r.mediaSource === 'youtube' ? youtubeVideo(r.youtubeUrl)?.watchUrl : undefined,
+    orientation: r.orientation ?? 'portrait',
   }))
 
   const whatsapp = whatsappUrl(settings.whatsapp, settings.whatsappMessage)
@@ -241,7 +245,7 @@ export default async function HomePage() {
                 </div>
                 {home.momentsIntro && <p className="lead">{home.momentsIntro}</p>}
               </div>
-              <Moments reels={reelCards} />
+              <Moments reels={reelCards} youtubeChannel={settings.youtube} />
             </div>
           </section>
         )}

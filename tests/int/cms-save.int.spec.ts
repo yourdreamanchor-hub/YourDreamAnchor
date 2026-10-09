@@ -11,6 +11,7 @@ let home: Home
 let settings: SiteSetting
 let user: User
 let token: string
+const createdReels: number[] = []
 
 describe('authenticated CMS saving', () => {
   beforeAll(async () => {
@@ -35,6 +36,7 @@ describe('authenticated CMS saving', () => {
   afterAll(async () => {
     if (home) await payload.updateGlobal({ slug: 'home', data: home })
     if (settings) await payload.updateGlobal({ slug: 'site-settings', data: settings })
+    for (const id of createdReels) await payload.delete({ collection: 'reels', id })
     if (user) await payload.delete({ collection: 'users', id: user.id })
     if (payload) await payload.destroy()
   }, 30000)
@@ -162,6 +164,103 @@ describe('authenticated CMS saving', () => {
             ...home.hero,
             films: [{ label: 'Wrong media', source: 'upload', video: photos.docs[0].id }],
           },
+        },
+      }),
+    ).rejects.toThrow()
+  })
+
+  it('saves a YouTube film without an upload, then edits, reorders and hides it', async () => {
+    const film = await payload.create({
+      collection: 'reels',
+      overrideAccess: false,
+      user: { ...user, collection: 'users' },
+      data: {
+        title: 'YouTube save test',
+        category: 'haldi',
+        mediaSource: 'youtube',
+        orientation: 'portrait',
+        youtubeUrl: 'https://youtu.be/zR7TZuHqzy8',
+        featured: false,
+        order: 900,
+      },
+    })
+    createdReels.push(film.id)
+    expect(film.video).toBeFalsy()
+    await payload.update({
+      collection: 'reels',
+      id: film.id,
+      overrideAccess: false,
+      user: { ...user, collection: 'users' },
+      data: {
+        title: 'Edited wedding film',
+        orientation: 'landscape',
+        youtubeUrl: 'https://www.youtube.com/watch?v=TzoFugiu4Go',
+        order: 901,
+      },
+    })
+    const saved = await payload.findByID({ collection: 'reels', id: film.id, depth: 0 })
+    expect(saved).toMatchObject({
+      title: 'Edited wedding film',
+      mediaSource: 'youtube',
+      orientation: 'landscape',
+      youtubeUrl: 'https://www.youtube.com/watch?v=TzoFugiu4Go',
+      order: 901,
+      featured: false,
+    })
+    await expect(
+      payload.update({
+        collection: 'reels',
+        id: film.id,
+        overrideAccess: false,
+        data: { title: 'Unauthorized' },
+      }),
+    ).rejects.toThrow()
+  })
+
+  it('rejects incomplete YouTube links, missing uploads and photos used as videos', async () => {
+    for (const youtubeUrl of [
+      '',
+      'https://www.youtube.com/@akshaytakalkarr',
+      'https://example.com/video',
+    ]) {
+      await expect(
+        payload.create({
+          collection: 'reels',
+          data: {
+            title: 'Invalid film',
+            category: 'wedding',
+            mediaSource: 'youtube',
+            orientation: 'portrait',
+            youtubeUrl,
+          },
+        }),
+      ).rejects.toThrow()
+    }
+    await expect(
+      payload.create({
+        collection: 'reels',
+        data: {
+          title: 'Missing upload',
+          category: 'wedding',
+          mediaSource: 'upload',
+          orientation: 'portrait',
+        },
+      }),
+    ).rejects.toThrow()
+    const photos = await payload.find({
+      collection: 'media',
+      where: { mimeType: { contains: 'image' } },
+      limit: 1,
+    })
+    await expect(
+      payload.create({
+        collection: 'reels',
+        data: {
+          title: 'Wrong media',
+          category: 'wedding',
+          mediaSource: 'upload',
+          orientation: 'portrait',
+          video: photos.docs[0].id,
         },
       }),
     ).rejects.toThrow()

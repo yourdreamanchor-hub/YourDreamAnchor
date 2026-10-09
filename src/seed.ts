@@ -19,7 +19,11 @@ const photo = (f: string) => path.join(root, 'photos', `${f}.jpg`)
 const payload = await getPayload({ config })
 const fresh = process.env.SEED_FRESH === '1'
 
-const existing = await payload.count({ collection: 'reels' })
+// The YouTube migration can already have added films to an otherwise empty installation.
+const existing = await payload.count({
+  collection: 'reels',
+  where: { mediaSource: { equals: 'upload' } },
+})
 if (existing.totalDocs > 0 && !fresh) {
   payload.logger.info('Reels already exist — skipping. Run with SEED_FRESH=1 to reseed.')
   process.exit(0)
@@ -38,7 +42,10 @@ async function upload(filePath: string, alt: string) {
 
 payload.logger.info('Uploading photos…')
 const img = {
-  logo: await upload(path.resolve('public/brand/anchor-monogram-v1.svg'), 'Your Dream Anchor monogram'),
+  logo: await upload(
+    path.resolve('public/brand/anchor-monogram-v1.svg'),
+    'Your Dream Anchor monogram',
+  ),
   portrait: await upload(photo('DTVrrtZko90_01'), 'Akshay R Takalkar hosting with a microphone'),
   anchor: await upload(photo('DXwrp41ElaJ_03'), 'Akshay singing to the crowd'),
   haldi: await upload(photo('DRZoPOqGP-P_13'), 'Akshay dancing with the haldi crowd in yellow'),
@@ -155,6 +162,8 @@ for (const [i, r] of reels.entries()) {
       category: r.category,
       location: r.location,
       caption: r.caption,
+      mediaSource: 'upload',
+      orientation: 'portrait',
       video,
       poster,
       instagramUrl: `https://www.instagram.com/reel/${r.id}/`,
@@ -162,6 +171,44 @@ for (const [i, r] of reels.entries()) {
       order: i,
     },
   })
+}
+
+for (const film of [
+  {
+    title: 'Harshita Gupta & Shrey Chabbra',
+    category: 'haldi',
+    orientation: 'portrait',
+    location: 'Jim Corbett, Uttarakhand',
+    youtubeUrl: 'https://www.youtube.com/watch?v=zR7TZuHqzy8',
+    caption: 'Akshay hosting the haldi ceremony of Harshita Gupta and Shrey Chabbra.',
+    order: -30,
+  },
+  {
+    title: 'Tarika & Dhruv',
+    category: 'wedding',
+    orientation: 'landscape',
+    youtubeUrl: 'https://www.youtube.com/watch?v=TzoFugiu4Go',
+    caption: 'The wedding of Tarika and Dhruv, hosted by Akshay.',
+    order: -20,
+  },
+  {
+    title: 'Sangeet, Haldi & Wedding Carnival',
+    category: 'wedding',
+    orientation: 'landscape',
+    youtubeUrl: 'https://www.youtube.com/watch?v=U9jM_swbcy0',
+    caption: 'Sangeet, haldi and wedding carnival celebrations with Akshay on the mic.',
+    order: -10,
+  },
+] as const) {
+  const existingFilm = await payload.count({
+    collection: 'reels',
+    where: { youtubeUrl: { equals: film.youtubeUrl } },
+  })
+  if (!existingFilm.totalDocs)
+    await payload.create({
+      collection: 'reels',
+      data: { ...film, mediaSource: 'youtube', featured: true },
+    })
 }
 
 // Real comments left by couples on @yourdreamanchor's Instagram posts (emojis removed, wording kept).
@@ -200,6 +247,7 @@ await payload.updateGlobal({
     whatsapp: '+91 87622 25685',
     instagram: 'https://www.instagram.com/yourdreamanchor/',
     instagramHandle: '@yourdreamanchor',
+    youtube: 'https://www.youtube.com/@akshaytakalkarr',
     logo: img.logo,
     shareImage: heroPoster,
   },
@@ -250,7 +298,8 @@ await payload.updateGlobal({
       },
       {
         title: 'Sangeet nights',
-        description: 'Run of show, family performances, surprise acts and a floor that never empties.',
+        description:
+          'Run of show, family performances, surprise acts and a floor that never empties.',
         image: img.sangeet,
         accent: 'violet',
       },

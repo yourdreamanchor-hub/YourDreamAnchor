@@ -31,14 +31,14 @@ ignored by Git. The production artwork, media, generators and source are version
 
 ## What the admin can change
 
-| In the admin                     | Controls                                                                 |
-| -------------------------------- | ------------------------------------------------------------------------ |
-| **Pages → Home page**            | Hero film sequence, labels and covers, all section text and photos, Games background, gallery, destinations, contact text |
-| **Content → Reels**              | The "Moments" videos: title, category, venue, cover image, order, show/hide |
-| **Content → Media**              | All uploaded photos and videos                                           |
-| **Content → Testimonials**       | Kind words from couples                                                  |
-| **Bookings → Inquiries**         | Every enquiry from the website form, with a status (new → contacted → booked) |
-| **Settings → Site settings**     | Logo, header links and booking button, loading intro and scroll animations, contact, social links, SEO |
+| In the admin                 | Controls                                                                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Pages → Home page**        | Hero film sequence, labels and covers, all section text and photos, Games background, gallery, destinations, contact text |
+| **Content → Reels**          | The "Moments" videos: upload or YouTube link, portrait/landscape shape, title, category, venue, cover, order, show/hide   |
+| **Content → Media**          | All uploaded photos and videos                                                                                            |
+| **Content → Testimonials**   | Kind words from couples                                                                                                   |
+| **Bookings → Inquiries**     | Every enquiry from the website form, with a status (new → contacted → booked)                                             |
+| **Settings → Site settings** | Logo, header links and booking button, loading intro and scroll animations, contact, social links, SEO                    |
 
 Saved changes appear on the site immediately. In headings, wrap a word in `*asterisks*` to show it in gold italics.
 
@@ -84,6 +84,17 @@ without JavaScript. Keyboard, pointer or scroll input dismisses it immediately; 
 visitors, deep links and restored scroll positions bypass it. It never locks scrolling or focus.
 Choose **Settings → Site settings → Brand → Site logo → Your uploaded logo** to use a replacement throughout; its
 intro uses a simple reveal rather than the original monogram's stroke drawing.
+
+To add a YouTube film, open **Content → Reels → Create**, choose **YouTube video**, paste the
+video link and choose **Portrait** or **Landscape** to match the footage. Add a title and category,
+set its order, then save. YouTube supplies the cover automatically; an uploaded cover overrides it.
+Use **Show on the home page** to hide a film. Uploaded clips and their existing covers remain
+editable in the same collection. Change the channel link under **Site settings → Social**.
+The verified starting selection comes from [Akshay Takalkar’s channel](https://www.youtube.com/@akshaytakalkarr):
+Harshita Gupta & Shrey Chabbra’s haldi, Tarika & Dhruv’s wedding, and the sangeet/haldi/carnival
+showcase. Their embeds load only after a visitor clicks, use YouTube’s privacy-enhanced domain,
+and are removed when the viewer closes or switches films. Every YouTube film also links to its
+original watch page. YouTube controls available playback quality; these films are not re-encoded.
 
 Videos: upload MP4 (H.264), ideally under 20 MB. To shrink one:
 
@@ -140,7 +151,7 @@ pnpm test:e2e   # home page, reel lightbox, privacy page, admin panel
 
 Supabase hosts the database and uploaded photos/videos; Vercel hosts the website and the bundled hero film.
 
-1. **Supabase → database.** Project → **Connect** → *Connection string* → **Transaction pooler** (port 6543).
+1. **Supabase → database.** Project → **Connect** → _Connection string_ → **Transaction pooler** (port 6543).
    Fill in your database password → `DATABASE_URL`.
 2. **Supabase → storage.**
    - **Storage → New bucket** named `yourdreamanchor`, set to **Public**. Raise its file size limit to 50 MB.

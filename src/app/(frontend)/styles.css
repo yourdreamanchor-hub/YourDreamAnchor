@@ -1259,11 +1259,119 @@ html:has(main :target) .brand-intro {
 }
 
 /* ---------- Moments (reels) ---------- */
+.moments__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin-bottom: 28px;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 28px;
+}
+
+.moments__channel {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 14px;
+}
+
+.wedding-films {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin-bottom: 48px;
+}
+
+.wedding-film {
+  display: block;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.wedding-film__cover {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: #000;
+}
+
+.wedding-film__cover img,
+.wedding-film__cover video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.wedding-film__play {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgb(10 6 14 / 0.8);
+  color: var(--ink);
+  transition:
+    background 180ms,
+    color 180ms;
+}
+
+.wedding-film:hover .wedding-film__play,
+.wedding-film:focus-visible .wedding-film__play {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+.wedding-film__details {
+  display: grid;
+  gap: 8px;
+  padding-top: 18px;
+}
+
+.wedding-film__source {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--gold);
+}
+
+.wedding-film__details strong {
+  font-family: var(--font-display);
+  font-size: clamp(21px, 2vw, 26px);
+  font-weight: 400;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.wedding-film__details small {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .wedding-films {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .wedding-film__details strong {
+    font-size: 25px;
+  }
 }
 
 .chip {
@@ -1460,7 +1568,7 @@ html:has(main :target) .brand-intro {
   border-radius: var(--radius);
   background: var(--bg-2);
   color: var(--ink);
-  overflow: hidden;
+  overflow: auto;
 }
 
 .lightbox::backdrop {
@@ -1474,11 +1582,76 @@ html:has(main :target) .brand-intro {
   grid-template-columns: auto 1fr;
 }
 
-.lightbox video {
-  height: min(80dvh, 760px);
+.lightbox__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 16px 10px 24px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.lightbox__media {
+  position: relative;
+  height: min(65dvh, 720px);
   aspect-ratio: 9 / 16;
-  object-fit: cover;
+  min-width: 200px;
+  min-height: 200px;
   background: #000;
+}
+
+.lightbox__media video,
+.lightbox__media iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: contain;
+}
+
+.lightbox__loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.lightbox--landscape {
+  width: min(1000px, calc(100vw - 32px), calc((100dvh - 250px) * 16 / 9));
+  min-width: min(320px, calc(100vw - 32px));
+}
+
+.lightbox--landscape .lightbox__body {
+  grid-template-columns: 1fr;
+}
+
+.lightbox--landscape .lightbox__media {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.lightbox--landscape .lightbox__info {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 24px;
+  padding: 24px;
+}
+
+.lightbox--landscape .lightbox__info > :not(.lightbox__nav) {
+  grid-column: 1;
+}
+
+.lightbox--landscape .lightbox__nav {
+  grid-column: 2;
+  grid-row: 1 / span 4;
+  align-self: center;
+  margin: 0;
+  padding: 0;
 }
 
 .lightbox__info {
@@ -1486,7 +1659,12 @@ html:has(main :target) .brand-intro {
   flex-direction: column;
   padding: 40px 32px 28px;
   overflow-y: auto;
-  max-height: min(80dvh, 760px);
+  max-height: min(65dvh, 720px);
+}
+
+.lightbox__info .link {
+  align-self: flex-start;
+  width: fit-content;
 }
 
 .lightbox__info h3 {
@@ -1531,20 +1709,18 @@ html:has(main :target) .brand-intro {
 }
 
 .lightbox__close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 2;
+  flex-shrink: 0;
+  color: var(--ink);
 }
 
 @media (max-width: 760px) {
   .lightbox__body {
     grid-template-columns: 1fr;
   }
-  .lightbox video {
+  .lightbox__media {
     width: 100%;
     height: auto;
-    max-height: 68dvh;
+    max-height: 56dvh;
   }
   .lightbox__info {
     padding: 20px;
@@ -1552,6 +1728,17 @@ html:has(main :target) .brand-intro {
   }
   .lightbox__caption {
     display: none;
+  }
+  .lightbox--landscape {
+    width: calc(100vw - 32px);
+  }
+  .lightbox--landscape .lightbox__info {
+    display: flex;
+    padding: 20px;
+  }
+  .lightbox--landscape .lightbox__nav {
+    align-self: stretch;
+    margin-top: 16px;
   }
 }
 

@@ -2,6 +2,7 @@ import * as migration_20261008_155138_initial from './20261008_155138_initial';
 import * as migration_20261008_173324_inquiry_ip_hash from './20261008_173324_inquiry_ip_hash';
 import * as migration_20261008_183949_whatsapp_settings from './20261008_183949_whatsapp_settings';
 import * as migration_20261009_060538_cms_editor_controls from './20261009_060538_cms_editor_controls';
+import * as migration_20261009_135015_youtube_films from './20261009_135015_youtube_films';
 
 export const migrations = [
   {
@@ -22,6 +23,11 @@ export const migrations = [
   {
     up: migration_20261009_060538_cms_editor_controls.up,
     down: migration_20261009_060538_cms_editor_controls.down,
-    name: '20261009_060538_cms_editor_controls'
+    name: '20261009_060538_cms_editor_controls',
+  },
+  {
+    up: migration_20261009_135015_youtube_films.up,
+    down: migration_20261009_135015_youtube_films.down,
+    name: '20261009_135015_youtube_films'
   },
 ];

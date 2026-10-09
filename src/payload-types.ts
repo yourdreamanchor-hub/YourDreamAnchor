@@ -130,7 +130,7 @@ export interface UserAuthOperations {
   };
 }
 /**
- * Event videos shown in the "Moments" showcase on the home page.
+ * Uploaded clips and YouTube wedding films shown in the "Moments" showcase.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reels".
@@ -140,12 +140,21 @@ export interface Reel {
   title: string;
   category: 'haldi' | 'mehendi' | 'sangeet' | 'wedding' | 'reception' | 'games' | 'corporate' | 'other';
   location?: string | null;
+  mediaSource: 'upload' | 'youtube';
   /**
-   * Vertical (9:16) MP4, ideally under 20 MB.
+   * Match the original footage so the player keeps its proportions.
    */
-  video: number | Media;
+  orientation: 'portrait' | 'landscape';
   /**
-   * Cover image shown before the video plays.
+   * Paste a public video or Shorts link. Its YouTube cover appears automatically; an uploaded cover below overrides it. Embedding must be enabled on YouTube.
+   */
+  youtubeUrl?: string | null;
+  /**
+   * MP4, ideally under 20 MB. Choose the matching video shape above.
+   */
+  video?: (number | null) | Media;
+  /**
+   * Optional cover image. YouTube videos use their original cover by default.
    */
   poster?: (number | null) | Media;
   caption?: string | null;
@@ -377,6 +386,9 @@ export interface ReelsSelect<T extends boolean = true> {
   title?: T;
   category?: T;
   location?: T;
+  mediaSource?: T;
+  orientation?: T;
+  youtubeUrl?: T;
   video?: T;
   poster?: T;
   caption?: T;

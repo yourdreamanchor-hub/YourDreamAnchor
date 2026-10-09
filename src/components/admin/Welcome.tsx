@@ -13,7 +13,7 @@ const actions = [
   {
     href: '/admin/collections/reels/create',
     title: 'Add a reel',
-    text: 'Upload an event video to “Moments”.',
+    text: 'Upload an event clip or add a YouTube wedding film to “Moments”.',
   },
   {
     href: '/admin/collections/media/create',
@@ -81,8 +81,13 @@ export default async function Welcome({ payload, user }: Props) {
             replace it. Optional phone videos and cover images work with every film.
           </li>
           <li>
-            Videos: short MP4 clips. Reels should be vertical (9:16); hero films can have both
-            landscape and portrait versions. Keep the original quality when exporting.
+            Moments: choose Uploaded video for an MP4, or YouTube video and paste its link. Match
+            the video shape to the original. The YouTube cover appears automatically; you can choose
+            a different cover, edit its title, reorder or hide it here.
+          </li>
+          <li>
+            Hero films can have both landscape and portrait versions. Keep the original quality when
+            exporting. The YouTube channel link is under Site settings → Social.
           </li>
           <li>
             Photos: JPG or PNG, at least 1200 px wide. Fill in the description for Google and screen

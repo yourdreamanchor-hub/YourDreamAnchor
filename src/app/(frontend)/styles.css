@@ -2070,7 +2070,7 @@ html:has(main :target) .brand-intro {
 .love__more {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 20px;
   padding-top: 28px;
 }

@@ -171,7 +171,7 @@ export interface Reel {
   createdAt: string;
 }
 /**
- * Upload photos and videos here. Videos: MP4 (H.264), ideally under 20 MB.
+ * Photos and videos used across the website. Upload here, then choose a file in Home page or Event videos. For video, use MP4 (H.264).
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
@@ -681,7 +681,7 @@ export interface Home {
   momentsKicker?: string | null;
   momentsHeading?: string | null;
   /**
-   * The videos themselves are managed under Content → Reels.
+   * The videos themselves are managed under Library → Event videos.
    */
   momentsIntro?: string | null;
   galleryKicker?: string | null;

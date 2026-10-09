@@ -31,19 +31,28 @@ ignored by Git. The production artwork, media, generators and source are version
 
 ## What the admin can change
 
-| In the admin                 | Controls                                                                                                                  |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **Pages → Home page**        | Hero film sequence, labels and covers, all section text and photos, Games background, gallery, destinations, contact text |
-| **Content → Reels**          | The "Moments" videos: upload or YouTube link, portrait/landscape shape, title, category, venue, cover, order, show/hide   |
-| **Content → Media**          | All uploaded photos and videos                                                                                            |
-| **Content → Testimonials**   | Kind words from couples                                                                                                   |
-| **Bookings → Inquiries**     | Every enquiry from the website form, with a status (new → contacted → booked)                                             |
-| **Settings → Site settings** | Logo, header links and booking button, loading intro and scroll animations, contact, social links, SEO                    |
+| In the admin                     | Controls                                                                                                                  |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Website → Home page**          | Hero film sequence, labels and covers, all section text and photos, Games background, gallery, destinations, contact text |
+| **Library → Event videos**       | The "Moments" videos: upload or YouTube link, portrait/landscape shape, title, category, venue, cover, order, show/hide   |
+| **Library → Media library**      | All uploaded photos and videos, with descriptions, file types, sizes and update dates                                     |
+| **Library → Reviews & comments** | Celebration feedback, collaborator praise and community comments with original source links                               |
+| **Bookings → Booking enquiries** | Every enquiry from the website form, with a status (new → contacted → booked)                                             |
+| **Settings → Site settings**     | Logo, header links and booking button, loading intro and scroll animations, contact, social links, SEO                    |
 
 Saved changes appear on the site immediately. In headings, wrap a word in `*asterisks*` to show it in gold italics.
 
+The sidebar retains Payload's native navigation, account controls and mobile menu. It shows
+the site's monogram, a link to view the website, and a short guide specific to the current section.
+Uploading a file adds it to the library; select it in Home page or Event videos to use it on the site.
+
+The media table deliberately hides storage internals from its columns and filters. `prefix` is
+an optional storage folder, and `_objectKey` is an identifier for direct browser uploads. Both
+can be empty on older imported files. Their values and storage hooks remain intact; editors
+do not need to fill them in. The same applies to generated URLs and image-size metadata.
+
 The hero gives the footage most of the screen, with a compact name and role near the bottom.
-Under **Pages → Home page → Hero**, edit **Name or title**, **Short role**, and the two action
+Under **Website → Home page → Hero**, edit **Name or title**, **Short role**, and the two action
 labels. The supporting line is optional and is currently empty to keep the opening uncluttered.
 
 **Hero films** is the list actually shown on the website. Drag its rows to reorder them, rename
@@ -85,7 +94,7 @@ visitors, deep links and restored scroll positions bypass it. It never locks scr
 Choose **Settings → Site settings → Brand → Site logo → Your uploaded logo** to use a replacement throughout; its
 intro uses a simple reveal rather than the original monogram's stroke drawing.
 
-To add a YouTube film, open **Content → Reels → Create**, choose **YouTube video**, paste the
+To add a YouTube film, open **Library → Event videos → Create**, choose **YouTube video**, paste the
 video link and choose **Portrait** or **Landscape** to match the footage. Add a title and category,
 set its order, then save. YouTube supplies the cover automatically; an uploaded cover overrides it.
 Use **Show on the home page** to hide a film. Uploaded clips and their existing covers remain
@@ -96,7 +105,7 @@ showcase. Their embeds load only after a visitor clicks, use YouTube’s privacy
 and are removed when the viewer closes or switches films. Every YouTube film also links to its
 original watch page. YouTube controls available playback quality; these films are not re-encoded.
 
-Under **Content → Testimonials**, edit a comment's wording, author, event label, social handle and
+Under **Library → Reviews & comments**, edit a comment's wording, author, event label, social handle and
 original comment link. **Feedback from** controls the Celebrations, Collaborators or Community
 filter. **Show on website** hides an entry, and **Order** determines its position; the first three
 lead the three columns of the floating review wall. Every visible comment participates in the

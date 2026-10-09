@@ -27,6 +27,9 @@
 }
 
 .yda-welcome__site {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 8px 14px;
   border-radius: 999px;
   border: 1px solid var(--theme-elevation-200);
@@ -125,4 +128,191 @@
   border-color: #25d366;
   background: #25d366;
   color: #062b14;
+}
+
+// Keep Payload's navigation, permissions and mobile menu; refine the surrounding UI.
+.nav {
+  background: var(--theme-elevation-50);
+
+  .nav-group {
+    margin-bottom: 20px;
+  }
+
+  .nav-group__toggle {
+    min-height: 28px;
+    align-items: center;
+    color: var(--theme-elevation-700);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .nav__link {
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+    margin: 2px -10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    color: var(--theme-text);
+    text-decoration: none;
+
+    &:hover {
+      background: var(--theme-elevation-100);
+    }
+
+    &:has(.nav__link-indicator) {
+      background: var(--theme-elevation-150);
+      font-weight: 600;
+    }
+  }
+
+  .nav__link:focus-visible,
+  .nav-group__toggle:focus-visible,
+  .yda-sidebar-header__site:focus-visible,
+  .yda-sidebar-guide__link:focus-visible {
+    outline: 2px solid var(--theme-text);
+    outline-offset: 3px;
+  }
+}
+
+.yda-admin-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: var(--theme-text);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.25;
+
+  small {
+    display: block;
+    margin-top: 6px;
+    color: var(--theme-elevation-700);
+    font-size: 13px;
+    font-weight: 400;
+  }
+}
+
+.yda-admin-logo__mark {
+  flex: 0 0 48px;
+  width: 48px;
+  height: 44px;
+}
+
+.yda-admin-icon {
+  display: block;
+  width: 28px;
+  height: 28px;
+  color: var(--theme-text);
+}
+
+.yda-sidebar-header {
+  width: 100%;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--theme-elevation-200);
+}
+
+.yda-sidebar-header__identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .yda-admin-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+  }
+
+  strong,
+  span {
+    display: block;
+  }
+
+  strong {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  span {
+    margin-top: 2px;
+    color: var(--theme-elevation-700);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+}
+
+.yda-sidebar-header__site {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  margin-top: 8px;
+  color: var(--theme-elevation-700);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:hover {
+    color: var(--theme-text);
+  }
+}
+
+.yda-sidebar-guide {
+  width: 100%;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--theme-elevation-200);
+  font-size: 12px;
+  line-height: 1.6;
+
+  strong {
+    color: var(--theme-text);
+    font-size: 13px;
+  }
+
+  p {
+    margin: 6px 0 0;
+    color: var(--theme-elevation-700);
+  }
+}
+
+.yda-sidebar-guide__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  margin-top: 6px;
+  color: var(--theme-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.yda-file-type {
+  display: grid;
+  gap: 2px;
+
+  small {
+    color: var(--theme-elevation-700);
+    font-size: 12px;
+  }
+}
+
+.yda-file-size {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 767px) {
+  .nav .nav__link,
+  .nav .nav-group__toggle,
+  .yda-sidebar-header__site,
+  .yda-sidebar-guide__link {
+    min-height: 44px;
+  }
+
+  .yda-admin-logo {
+    gap: 10px;
+    font-size: 20px;
+  }
 }

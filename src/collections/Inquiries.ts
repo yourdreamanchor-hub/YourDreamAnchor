@@ -16,6 +16,7 @@ export const eventTypes = [
 
 export const Inquiries: CollectionConfig = {
   slug: 'inquiries',
+  labels: { singular: 'Booking enquiry', plural: 'Booking enquiries' },
   admin: {
     listSearchableFields: ['name', 'phone', 'email', 'city'],
     group: 'Bookings',

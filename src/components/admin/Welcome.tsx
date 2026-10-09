@@ -1,6 +1,7 @@
 import type { Payload, User } from 'payload'
-import Link from 'next/link'
+import { Link } from '@payloadcms/ui'
 import React from 'react'
+import { ExternalLinkIcon } from './Brand'
 
 type Props = { payload: Payload; user?: User | null }
 
@@ -12,7 +13,7 @@ const actions = [
   },
   {
     href: '/admin/collections/reels/create',
-    title: 'Add a reel',
+    title: 'Add an event video',
     text: 'Upload an event clip or add a YouTube wedding film to “Moments”.',
   },
   {
@@ -22,7 +23,7 @@ const actions = [
   },
   {
     href: '/admin/collections/testimonials',
-    title: 'Kind words',
+    title: 'Reviews & comments',
     text: 'Edit celebration feedback, collaborator praise and community comments with their source links.',
   },
   {
@@ -44,11 +45,11 @@ export default async function Welcome({ payload, user }: Props) {
     <section className="yda-welcome">
       <div className="yda-welcome__head">
         <div>
-          <h2>Welcome back{name ? `, ${name}` : ''} ✦</h2>
+          <h2>Welcome back{name ? `, ${name}` : ''}</h2>
           <p>What would you like to update today? Changes go live as soon as you click Save.</p>
         </div>
         <a className="yda-welcome__site" href="/" target="_blank" rel="noreferrer">
-          View website ↗
+          View website <ExternalLinkIcon />
         </a>
       </div>
 

@@ -29,10 +29,10 @@ export const reelCategories = [
 
 export const Reels: CollectionConfig = {
   slug: 'reels',
-  labels: { singular: 'Reel', plural: 'Reels' },
+  labels: { singular: 'Event video', plural: 'Event videos' },
   admin: {
     listSearchableFields: ['title', 'location', 'caption'],
-    group: 'Content',
+    group: 'Library',
     useAsTitle: 'title',
     defaultColumns: ['title', 'mediaSource', 'category', 'featured', 'order'],
     description: 'Uploaded clips and YouTube wedding films shown in the "Moments" showcase.',

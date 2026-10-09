@@ -16,6 +16,7 @@ import { HomePage } from './globals/HomePage'
 import { SiteSettings } from './globals/SiteSettings'
 import { migrations } from './migrations'
 import { cmsOrigins, siteOrigin } from './lib/site-origin'
+import { mediaAdmin } from './lib/media-admin'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -41,6 +42,8 @@ export default buildConfig({
         Icon: '/components/admin/Brand#Icon',
       },
       beforeDashboard: ['/components/admin/Welcome'],
+      beforeNavLinks: ['/components/admin/SidebarHeader'],
+      afterNavLinks: ['/components/admin/SidebarGuide'],
     },
     // Local development only: signs in the throwaway admin from .env.admin-test.local.
     autoLogin:
@@ -100,5 +103,6 @@ export default buildConfig({
       // Uploads go browser → bucket directly, so large videos skip Vercel's 4.5 MB request limit.
       clientUploads: true,
     }),
+    mediaAdmin,
   ],
 })

@@ -12,9 +12,10 @@ const validateSource: TextFieldValidation = (value, { siblingData }) =>
 
 export const Testimonials: CollectionConfig = {
   slug: 'testimonials',
+  labels: { singular: 'Review or comment', plural: 'Reviews & comments' },
   admin: {
     listSearchableFields: ['name', 'quote', 'event', 'sourceHandle'],
-    group: 'Content',
+    group: 'Library',
     useAsTitle: 'name',
     defaultColumns: ['name', 'audience', 'sourcePlatform', 'featured', 'order'],
     description:

@@ -10,7 +10,7 @@ export const HomePage: GlobalConfig = {
   slug: 'home',
   label: 'Home page',
   admin: {
-    group: 'Pages',
+    group: 'Website',
     description:
       'Edit the home page section by section. Save to publish your changes; Live Preview shows the saved website beside the editor.',
     livePreview: {
@@ -291,7 +291,9 @@ export const HomePage: GlobalConfig = {
             {
               name: 'momentsIntro',
               type: 'textarea',
-              admin: { description: 'The videos themselves are managed under Content → Reels.' },
+              admin: {
+                description: 'The videos themselves are managed under Library → Event videos.',
+              },
             },
           ],
         },

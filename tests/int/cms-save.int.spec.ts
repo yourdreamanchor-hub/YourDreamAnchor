@@ -112,6 +112,53 @@ describe('authenticated CMS saving', () => {
     expect(saved.about).toEqual(home.about)
   })
 
+  it('edits media descriptions without changing file storage or generated images', async () => {
+    const photos = await payload.find({
+      collection: 'media',
+      where: { mimeType: { contains: 'image' } },
+      limit: 1,
+      depth: 0,
+    })
+    expect(photos.docs).toHaveLength(1)
+    const photo = photos.docs[0]
+    const fileDetails = {
+      filename: photo.filename,
+      mimeType: photo.mimeType,
+      filesize: photo.filesize,
+      prefix: photo.prefix,
+      _objectKey: photo._objectKey,
+      url: photo.url,
+      thumbnailURL: photo.thumbnailURL,
+      width: photo.width,
+      height: photo.height,
+      sizes: photo.sizes,
+    }
+    try {
+      const saved = await payload.update({
+        collection: 'media',
+        id: photo.id,
+        overrideAccess: false,
+        user: { ...user, collection: 'users' },
+        data: { alt: 'Edited wedding photo description' },
+      })
+      expect(saved.alt).toBe('Edited wedding photo description')
+      expect(saved).toMatchObject(fileDetails)
+      const reloaded = await payload.findByID({ collection: 'media', id: photo.id, depth: 0 })
+      expect(reloaded.alt).toBe(saved.alt)
+      expect(reloaded).toMatchObject(fileDetails)
+      await expect(
+        payload.update({
+          collection: 'media',
+          id: photo.id,
+          overrideAccess: false,
+          data: { alt: 'Unauthorized' },
+        }),
+      ).rejects.toThrow()
+    } finally {
+      await payload.update({ collection: 'media', id: photo.id, data: { alt: photo.alt } })
+    }
+  })
+
   it('saves and reloads navigation, logo choice and animation settings', async () => {
     const changes = {
       navigation: [

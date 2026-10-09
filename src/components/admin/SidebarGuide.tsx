@@ -6,6 +6,11 @@ import React from 'react'
 
 const guides = [
   {
+    path: '/admin/collections/city-pages',
+    title: 'Mumbai & Bengaluru pages',
+    text: 'Edit the opening photo, page text, booking questions and search preview. Matching Event videos appear automatically. Show on website controls the page, its links and the sitemap.',
+  },
+  {
     path: '/admin/collections/media',
     title: 'Using your media',
     text: 'Upload files here, then choose them in Home page or Event videos. Uploading a file alone does not place it on the website.',
@@ -40,7 +45,7 @@ const guides = [
   {
     path: '/admin/globals/site-settings',
     title: 'Settings across the site',
-    text: 'Manage the logo, header, animations, contact details, social links and search preview. Save to publish your changes.',
+    text: 'Manage the logo, header, animations, contact details and social links. The SEO tab holds the home page search preview and Google Search Console verification instructions.',
   },
 ]
 

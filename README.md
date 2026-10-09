@@ -34,6 +34,7 @@ ignored by Git. The production artwork, media, generators and source are version
 | In the admin                     | Controls                                                                                                                  |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | **Website → Home page**          | Hero film sequence, labels and covers, all section text and photos, Games background, gallery, destinations, contact text |
+| **Website → City pages**         | Mumbai and Bengaluru page copy, opening photos, booking questions, search titles and descriptions, publish/hide           |
 | **Library → Event videos**       | The "Moments" videos: upload or YouTube link, portrait/landscape shape, title, category, venue, cover, order, show/hide   |
 | **Library → Media library**      | All uploaded photos and videos, with descriptions, file types, sizes and update dates                                     |
 | **Library → Reviews & comments** | Celebration feedback, collaborator praise and community comments with original source links                               |
@@ -155,6 +156,64 @@ visitor chooses one, holds the current picture until a decoded frame is ready, a
 tab, offers manual film selection and a pause button, and holds a poster by default for reduced
 motion or data saver. Keyboard focus on its controls keeps the chosen film from rotating. A custom
 film list can mix the approved films with your own uploads, in any order.
+
+## Search visibility and city pages
+
+The public search address is always `https://yourdreamanchor.com`, independent of development
+URLs and Vercel aliases. Each public page has its own canonical, title, description, social
+preview and indexing directive. Production permits crawling, including uploaded image files;
+development and Vercel previews use noindex. Payload admin pages also send noindex in their
+HTML and response headers. Robots points to the public sitemap rather than localhost.
+
+The sitemap contains the home page, privacy page and published city pages, with real CMS
+modification dates and photo entries. Saving CMS content invalidates the site and sitemap.
+Organization, Person, WebSite, WebPage, Service and city breadcrumbs describe the actual
+business. Social comments are not converted into ratings or review stars. No office address
+is inferred from a city or an event venue.
+
+**Website → City pages** controls `/wedding-anchor-mumbai` and `/wedding-anchor-bengaluru`.
+Edit the opening text, photo/caption, section headings, planning copy, booking questions and
+search preview. Opening button labels share the editable Home page → Hero labels. Leave the
+opening photo empty to use that city’s photo from Home page →
+Destinations. Services come from Home page; featured Event videos appear when their **Location**
+contains Mumbai, Bengaluru or Bangalore. A film title mentioning a city does not qualify it.
+Turn off **Show on website** to remove the page from public access, the sitemap and site links.
+City forms prefill the city while keeping it editable. Opening photo and home photos use the
+real generated image sizes, explicit dimensions and descriptions. The first hero cover is
+preloaded without changing the approved footage.
+
+Run `pnpm verify:seo` for a read-only public HTTP audit. To check a local production build:
+`SEO_AUDIT_ORIGIN=http://localhost:3100 pnpm verify:seo`. For a development/preview build,
+also set `SEO_AUDIT_PREVIEW=1`. An optional file argument saves the public audit report.
+These checks verify output and discovery; they do not measure rankings or field Core Web Vitals.
+
+## Connect Google search tools
+
+1. Open [Google Search Console](https://search.google.com/search-console) with the business
+   owner’s Google account. For the quickest setup, add the **URL-prefix** property
+   `https://yourdreamanchor.com/` and choose **HTML tag** verification. Copy only the tag’s
+   `content` value into **Settings → Site settings → SEO → Google Search Console verification
+   token**, then Save. Return to Google and click Verify. Keep the token saved afterward.
+   Alternatively, a **Domain** property for `yourdreamanchor.com` verifies through the DNS
+   provider and covers protocol/subdomain variations. See [Google’s ownership instructions](https://support.google.com/webmasters/answer/9008080).
+2. Submit `https://yourdreamanchor.com/sitemap.xml` under Search Console → Sitemaps.
+   Inspect the home page and both city pages and request indexing. Review Page indexing,
+   Performance and Core Web Vitals as data becomes available.
+3. Create or claim [Google Business Profile](https://www.google.com/business/) with the actual
+   business name, public phone and website. Choose accurate services/categories and complete
+   Google’s verification. If customers are served at event venues rather than a staffed public
+   office, use the appropriate service-area setup and hide a residential address. Do not create
+   fictitious Mumbai/Bengaluru offices. See [Google’s address guidance](https://support.google.com/business/answer/2853879).
+4. Add real event photos and request honest feedback from actual couples. Keep contact details
+   consistent across the website, profile, Instagram and YouTube. Useful venue/planner links
+   and new event stories can build evidence over time.
+
+The starting searches are **wedding anchor in Mumbai**, **event anchor in Mumbai**, **wedding
+anchor in Bengaluru**, **event anchor in Bengaluru**, and the natural Bangalore/emcee variants.
+Track impressions, clicks and relevant enquiries before expanding the content. Google controls
+indexing and ranking; implementation does not guarantee a position. Google describes the
+importance of useful content in its [SEO starter guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide),
+and relevance, distance and prominence in its [local ranking guidance](https://support.google.com/business/answer/7091).
 
 ## Changing the content model
 

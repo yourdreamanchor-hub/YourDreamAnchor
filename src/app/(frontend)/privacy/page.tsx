@@ -2,14 +2,22 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import React from 'react'
 
-import { getSiteData } from '@/lib/data'
+import { getSiteSettings } from '@/lib/data'
+import { pageMetadata } from '@/lib/seo'
 
 export const revalidate = 3600
 
-export const metadata: Metadata = { title: 'Privacy policy · Your Dream Anchor' }
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  return pageMetadata(settings, {
+    path: '/privacy',
+    title: `Privacy policy | ${settings.brandName}`,
+    description: `How ${settings.brandName} uses and protects the details you share when enquiring about a wedding or event with ${settings.anchorName}.`,
+  })
+}
 
 export default async function PrivacyPage() {
-  const { settings } = await getSiteData()
+  const settings = await getSiteSettings()
   const contact = settings.email || settings.phone || 'the contact details on our home page'
 
   return (
@@ -23,15 +31,15 @@ export default async function PrivacyPage() {
 
         <h2>What we collect</h2>
         <p>
-          When you send an enquiry through this website, we collect the details you enter: your name,
-          phone number, email address (optional), the type and date of your event, the city or venue,
-          and your message.
+          When you send an enquiry through this website, we collect the details you enter: your
+          name, phone number, email address (optional), the type and date of your event, the city or
+          venue, and your message.
         </p>
 
         <h2>How we use it</h2>
         <p>
-          We use these details only to reply to your enquiry, check availability and plan your event.
-          We do not sell your details or use them for unrelated marketing.
+          We use these details only to reply to your enquiry, check availability and plan your
+          event. We do not sell your details or use them for unrelated marketing.
         </p>
 
         <h2>Who can see it</h2>
@@ -43,8 +51,8 @@ export default async function PrivacyPage() {
 
         <h2>How long we keep it</h2>
         <p>
-          We keep enquiries for as long as needed to respond and manage a booking, and delete them on
-          request.
+          We keep enquiries for as long as needed to respond and manage a booking, and delete them
+          on request.
         </p>
 
         <h2>Your choices</h2>
@@ -55,8 +63,8 @@ export default async function PrivacyPage() {
 
         <h2>Analytics</h2>
         <p>
-          We use privacy-friendly, cookie-free analytics to count page visits. It does not identify you
-          personally.
+          We use privacy-friendly, cookie-free analytics to count page visits. It does not identify
+          you personally.
         </p>
       </div>
     </main>

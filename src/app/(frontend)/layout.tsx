@@ -4,10 +4,10 @@ import { Fraunces, Manrope } from 'next/font/google'
 import React from 'react'
 
 import { LivePreviewListener } from '@/components/site/LivePreviewListener'
-import { getSiteData, mediaUrl } from '@/lib/data'
+import { getSiteSettings, mediaUrl } from '@/lib/data'
 import { brandAppleIconUrl, brandIconUrl, monogramUrl } from '@/lib/brand'
 import { selectedLogo } from '@/lib/site-content'
-import { siteOrigin } from '@/lib/site-origin'
+import { pageMetadata } from '@/lib/seo'
 import './styles.css'
 
 const display = Fraunces({
@@ -19,18 +19,14 @@ const display = Fraunces({
 const sans = Manrope({ subsets: ['latin'], variable: '--font-sans' })
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { settings } = await getSiteData()
-  const image = mediaUrl(settings.shareImage, 'wide')
+  const settings = await getSiteSettings()
   const logo = selectedLogo(settings, mediaUrl(settings.logo))
   return {
+    ...pageMetadata(settings),
     icons:
       logo === monogramUrl
         ? { icon: brandIconUrl, apple: brandAppleIconUrl }
         : { icon: logo, apple: logo },
-    metadataBase: new URL(siteOrigin()),
-    title: settings.metaTitle || settings.brandName,
-    description: settings.metaDescription || undefined,
-    openGraph: image ? { images: [image] } : undefined,
   }
 }
 

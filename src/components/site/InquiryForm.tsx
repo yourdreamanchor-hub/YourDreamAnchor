@@ -14,10 +14,15 @@ type Props = {
   successMessage: string
   whatsappNumber?: string | null
   anchorFirstName: string
+  defaultCity?: string
 }
 
 /** Turns the submitted enquiry into a ready-to-send WhatsApp message. */
-function enquiryMessage(body: Record<string, FormDataEntryValue>, eventTypes: Option[], to: string) {
+function enquiryMessage(
+  body: Record<string, FormDataEntryValue>,
+  eventTypes: Option[],
+  to: string,
+) {
   const event = eventTypes.find((t) => t.value === body.eventType)?.label ?? body.eventType
   const date = body.eventDate
     ? new Date(String(body.eventDate)).toLocaleDateString('en-IN', {
@@ -39,7 +44,13 @@ function enquiryMessage(body: Record<string, FormDataEntryValue>, eventTypes: Op
     .join('\n')
 }
 
-export function InquiryForm({ eventTypes, successMessage, whatsappNumber, anchorFirstName }: Props) {
+export function InquiryForm({
+  eventTypes,
+  successMessage,
+  whatsappNumber,
+  anchorFirstName,
+  defaultCity,
+}: Props) {
   const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
   const [error, setError] = useState<string | null>(null)
   const [followUp, setFollowUp] = useState<string | null>(null)
@@ -82,7 +93,9 @@ export function InquiryForm({ eventTypes, successMessage, whatsappNumber, anchor
         <p>{successMessage}</p>
         {followUp && (
           <>
-            <p className="form-done__hint">Want a faster reply? Send the same details on WhatsApp.</p>
+            <p className="form-done__hint">
+              Want a faster reply? Send the same details on WhatsApp.
+            </p>
             <a href={followUp} target="_blank" rel="noreferrer" className="btn btn--whatsapp">
               <WhatsAppIcon size={20} />
               Send on WhatsApp
@@ -127,7 +140,7 @@ export function InquiryForm({ eventTypes, successMessage, whatsappNumber, anchor
       <div className="form__row">
         <label>
           <span>City / venue</span>
-          <input name="city" maxLength={120} />
+          <input name="city" maxLength={120} defaultValue={defaultCity} />
         </label>
         <label>
           <span>Email</span>
@@ -136,14 +149,20 @@ export function InquiryForm({ eventTypes, successMessage, whatsappNumber, anchor
       </div>
       <label>
         <span>Tell us about the celebration</span>
-        <textarea name="message" rows={4} maxLength={3000} placeholder="Number of functions, guests, the vibe you want…" />
+        <textarea
+          name="message"
+          rows={4}
+          maxLength={3000}
+          placeholder="Number of functions, guests, the vibe you want…"
+        />
       </label>
       <input className="hp" name="website" tabIndex={-1} autoComplete="off" aria-hidden />
       <button className="btn btn--gold btn--lg" disabled={state === 'sending'}>
         {state === 'sending' ? 'Sending…' : 'Send enquiry'}
       </button>
       <p className="form__note">
-        We only use your details to reply about your event. <Link href="/privacy">Privacy policy</Link>
+        We only use your details to reply about your event.{' '}
+        <Link href="/privacy">Privacy policy</Link>
       </p>
       {state === 'error' && (
         <p className="form__error" role="alert">

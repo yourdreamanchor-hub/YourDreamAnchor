@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 export const revalidateSite = () => {
   try {
     revalidatePath('/', 'layout')
+    revalidatePath('/sitemap.xml')
   } catch {
     // Outside a Next.js request (e.g. the seed script) there is no cache to clear.
   }

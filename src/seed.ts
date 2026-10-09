@@ -11,6 +11,7 @@ import { getPayload } from 'payload'
 
 import config from './payload.config'
 import socialFeedback from './content/social-feedback.json'
+import { initialCityPages } from './content/city-pages'
 import type { FeedbackAudience, FeedbackPlatform } from './lib/feedback'
 
 const root = path.resolve(process.cwd(), 'media-import')
@@ -365,6 +366,11 @@ await payload.updateGlobal({
     },
   },
 })
+
+for (const data of initialCityPages) {
+  const existing = await payload.count({ collection: 'city-pages', where: { city: { equals: data.city } } })
+  if (!existing.totalDocs) await payload.create({ collection: 'city-pages', data })
+}
 
 payload.logger.info('Seed complete.')
 process.exit(0)

@@ -3,15 +3,17 @@ import { randomUUID } from 'node:crypto'
 import { getPayload, JWTAuthentication, type Payload } from 'payload'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import config from '@/payload.config'
-import type { Home, SiteSetting, User } from '@/payload-types'
+import type { CityPage, Home, SiteSetting, User } from '@/payload-types'
 import { cmsOrigins } from '@/lib/site-origin'
-import { getSiteData } from '@/lib/data'
+import { getCityPages, getSiteData } from '@/lib/data'
+import sitemap from '@/app/(frontend)/sitemap'
 
 let payload: Payload
 let home: Home
 let settings: SiteSetting
 let user: User
 let token: string
+let cityPage: CityPage
 const createdReels: number[] = []
 const createdTestimonials: number[] = []
 
@@ -23,6 +25,13 @@ describe('authenticated CMS saving', () => {
     payload = await getPayload({ config: await config })
     home = await payload.findGlobal({ slug: 'home', depth: 0 })
     settings = await payload.findGlobal({ slug: 'site-settings', depth: 0 })
+    cityPage = (
+      await payload.find({
+        collection: 'city-pages',
+        where: { city: { equals: 'mumbai' } },
+        depth: 0,
+      })
+    ).docs[0]
     const password = randomUUID()
     user = await payload.create({
       collection: 'users',
@@ -38,6 +47,8 @@ describe('authenticated CMS saving', () => {
   afterAll(async () => {
     if (home) await payload.updateGlobal({ slug: 'home', data: home })
     if (settings) await payload.updateGlobal({ slug: 'site-settings', data: settings })
+    if (cityPage)
+      await payload.update({ collection: 'city-pages', id: cityPage.id, data: cityPage })
     for (const id of createdReels) await payload.delete({ collection: 'reels', id })
     for (const id of createdTestimonials) await payload.delete({ collection: 'testimonials', id })
     if (user) await payload.delete({ collection: 'users', id: user.id })
@@ -110,6 +121,76 @@ describe('authenticated CMS saving', () => {
     expect(saved.galleryKicker).toBe('Favourite frames')
     expect(saved.gallery).toEqual(home.gallery)
     expect(saved.about).toEqual(home.about)
+  })
+
+  it('edits city content and SEO as an editor, and hides unpublished pages from discovery', async () => {
+    expect(cityPage).toBeDefined()
+    const changes = {
+      headline: 'Edited *Mumbai* heading',
+      metaTitle: 'Edited Mumbai title',
+      metaDescription: 'An edited city description.',
+      published: false,
+    }
+    await payload.update({
+      collection: 'city-pages',
+      id: cityPage.id,
+      data: changes,
+      overrideAccess: false,
+      user: { ...user, collection: 'users' },
+    })
+    expect(await payload.findByID({ collection: 'city-pages', id: cityPage.id })).toMatchObject(
+      changes,
+    )
+    expect((await getCityPages()).map((page) => page.city)).not.toContain('mumbai')
+    expect((await sitemap()).map((entry) => entry.url)).not.toContain(
+      'https://yourdreamanchor.com/wedding-anchor-mumbai',
+    )
+    await expect(
+      payload.findByID({ collection: 'city-pages', id: cityPage.id, overrideAccess: false }),
+    ).rejects.toThrow()
+    await expect(
+      payload.update({
+        collection: 'city-pages',
+        id: cityPage.id,
+        overrideAccess: false,
+        data: { headline: 'Unauthorized' },
+      }),
+    ).rejects.toThrow()
+    await payload.update({
+      collection: 'city-pages',
+      id: cityPage.id,
+      data: { published: true },
+      overrideAccess: false,
+      user: { ...user, collection: 'users' },
+    })
+    expect((await getCityPages()).map((page) => page.city)).toContain('mumbai')
+    const entry = (await sitemap()).find(
+      (page) => page.url === 'https://yourdreamanchor.com/wedding-anchor-mumbai',
+    )
+    expect(entry?.lastModified).toBeTruthy()
+    expect(entry?.images?.length).toBeGreaterThan(0)
+  })
+
+  it('saves Google verification in SEO settings and explains an incorrectly pasted tag', async () => {
+    await payload.updateGlobal({
+      slug: 'site-settings',
+      data: { googleSiteVerification: 'google_verification-token' },
+      overrideAccess: false,
+      user: { ...user, collection: 'users' },
+    })
+    expect((await payload.findGlobal({ slug: 'site-settings' })).googleSiteVerification).toBe(
+      'google_verification-token',
+    )
+    await expect(
+      payload.updateGlobal({
+        slug: 'site-settings',
+        data: {
+          googleSiteVerification: '<meta name="google-site-verification" content="token" />',
+        },
+        overrideAccess: false,
+        user: { ...user, collection: 'users' },
+      }),
+    ).rejects.toThrow()
   })
 
   it('edits media descriptions without changing file storage or generated images', async () => {

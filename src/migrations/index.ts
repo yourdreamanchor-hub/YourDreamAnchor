@@ -4,6 +4,7 @@ import * as migration_20261008_183949_whatsapp_settings from './20261008_183949_
 import * as migration_20261009_060538_cms_editor_controls from './20261009_060538_cms_editor_controls'
 import * as migration_20261009_135015_youtube_films from './20261009_135015_youtube_films'
 import * as migration_20261009_150226_social_feedback from './20261009_150226_social_feedback'
+import * as migration_20261009_222548_seo_city_pages from './20261009_222548_seo_city_pages'
 
 export const migrations = [
   {
@@ -35,5 +36,10 @@ export const migrations = [
     up: migration_20261009_150226_social_feedback.up,
     down: migration_20261009_150226_social_feedback.down,
     name: '20261009_150226_social_feedback',
+  },
+  {
+    up: migration_20261009_222548_seo_city_pages.up,
+    down: migration_20261009_222548_seo_city_pages.down,
+    name: '20261009_222548_seo_city_pages',
   },
 ]

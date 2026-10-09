@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    'city-pages': CityPage;
     reels: Reel;
     media: Media;
     testimonials: Testimonial;
@@ -79,6 +80,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    'city-pages': CityPagesSelect<false> | CityPagesSelect<true>;
     reels: ReelsSelect<false> | ReelsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
@@ -130,43 +132,53 @@ export interface UserAuthOperations {
   };
 }
 /**
- * Uploaded clips and YouTube wedding films shown in the "Moments" showcase.
+ * Mumbai and Bengaluru booking pages. Opening button labels come from Home page → Hero. Event videos with a matching location appear automatically. Save publishes edits; turn off Show on website to hide a page and its links.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "reels".
+ * via the `definition` "city-pages".
  */
-export interface Reel {
+export interface CityPage {
   id: number;
-  title: string;
-  category: 'haldi' | 'mehendi' | 'sangeet' | 'wedding' | 'reception' | 'games' | 'corporate' | 'other';
-  location?: string | null;
-  mediaSource: 'upload' | 'youtube';
+  city: 'mumbai' | 'bengaluru';
   /**
-   * Match the original footage so the player keeps its proportions.
+   * Only published pages appear in the sitemap and home page links.
    */
-  orientation: 'portrait' | 'landscape';
+  published?: boolean | null;
   /**
-   * Paste a public video or Shorts link. Its YouTube cover appears automatically; an uploaded cover below overrides it. Embedding must be enabled on YouTube.
+   * The page’s main heading. Wrap a word in *asterisks* for gold italics.
    */
-  youtubeUrl?: string | null;
+  headline: string;
+  intro: string;
   /**
-   * MP4, ideally under 20 MB. Choose the matching video shape above.
+   * Opening photo. Leave empty to use this city’s photo from Home page → Destinations.
    */
-  video?: (number | null) | Media;
+  image?: (number | null) | Media;
+  imageCaption?: string | null;
   /**
-   * Optional cover image. YouTube videos use their original cover by default.
+   * The services themselves come from Home page → Services.
    */
-  poster?: (number | null) | Media;
-  caption?: string | null;
-  instagramUrl?: string | null;
+  servicesHeading: string;
+  momentsHeading: string;
+  momentsIntro?: string | null;
+  planningHeading: string;
+  planningBody: string;
+  contactHeading: string;
+  contactBody?: string | null;
+  questions?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
   /**
-   * Show on the home page.
+   * A clear, unique title with the service and city. Around 50–60 characters is a useful guide, not a limit.
    */
-  featured?: boolean | null;
+  metaTitle: string;
   /**
-   * Lower numbers appear first.
+   * Describe this city page naturally. Search engines may choose a different excerpt.
    */
-  order?: number | null;
+  metaDescription: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -221,6 +233,47 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * Uploaded clips and YouTube wedding films shown in the "Moments" showcase.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reels".
+ */
+export interface Reel {
+  id: number;
+  title: string;
+  category: 'haldi' | 'mehendi' | 'sangeet' | 'wedding' | 'reception' | 'games' | 'corporate' | 'other';
+  location?: string | null;
+  mediaSource: 'upload' | 'youtube';
+  /**
+   * Match the original footage so the player keeps its proportions.
+   */
+  orientation: 'portrait' | 'landscape';
+  /**
+   * Paste a public video or Shorts link. Its YouTube cover appears automatically; an uploaded cover below overrides it. Embedding must be enabled on YouTube.
+   */
+  youtubeUrl?: string | null;
+  /**
+   * MP4, ideally under 20 MB. Choose the matching video shape above.
+   */
+  video?: (number | null) | Media;
+  /**
+   * Optional cover image. YouTube videos use their original cover by default.
+   */
+  poster?: (number | null) | Media;
+  caption?: string | null;
+  instagramUrl?: string | null;
+  /**
+   * Show on the home page.
+   */
+  featured?: boolean | null;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Real celebration feedback and public comments. Every imported comment links to its original source.
@@ -331,6 +384,10 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'city-pages';
+        value: number | CityPage;
+      } | null)
+    | ({
         relationTo: 'reels';
         value: number | Reel;
       } | null)
@@ -391,6 +448,36 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "city-pages_select".
+ */
+export interface CityPagesSelect<T extends boolean = true> {
+  city?: T;
+  published?: T;
+  headline?: T;
+  intro?: T;
+  image?: T;
+  imageCaption?: T;
+  servicesHeading?: T;
+  momentsHeading?: T;
+  momentsIntro?: T;
+  planningHeading?: T;
+  planningBody?: T;
+  contactHeading?: T;
+  contactBody?: T;
+  questions?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  metaTitle?: T;
+  metaDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -794,12 +881,22 @@ export interface SiteSetting {
   instagram?: string | null;
   instagramHandle?: string | null;
   youtube?: string | null;
+  /**
+   * Name the service and your main cities naturally. City pages have their own search titles.
+   */
   metaTitle?: string | null;
+  /**
+   * A concise, accurate introduction for search results. Google may choose a different excerpt.
+   */
   metaDescription?: string | null;
   /**
    * Preview image when the site is shared on WhatsApp, Instagram, etc.
    */
   shareImage?: (number | null) | Media;
+  /**
+   * In Search Console, add the URL-prefix property https://yourdreamanchor.com/ and choose HTML tag. Paste only its content value here, Save, then return to Google and click Verify. Keep the token after verification. A Domain property uses a DNS record instead. Submit https://yourdreamanchor.com/sitemap.xml once verified.
+   */
+  googleSiteVerification?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -953,6 +1050,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   metaTitle?: T;
   metaDescription?: T;
   shareImage?: T;
+  googleSiteVerification?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

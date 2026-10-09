@@ -2424,17 +2424,190 @@ html:has(main :target) .brand-intro {
   font-size: 13px;
 }
 
+.footer__cities {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  font-size: 14px;
+}
+
+.footer__cities a,
+.destination strong a {
+  color: var(--ink);
+  text-decoration-color: var(--line);
+  text-underline-offset: 5px;
+  transition: color 0.2s var(--ease);
+}
+
+.footer__cities a:hover,
+.destination strong a:hover {
+  color: var(--gold);
+}
+
 .footer p {
   margin-top: 0;
 }
 
 @media (max-width: 700px) {
+  .footer--with-whatsapp {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  }
   .footer__inner {
     grid-template-columns: 1fr;
   }
 }
 
 /* ---------- WhatsApp ---------- */
+/* City pages reuse the site's typography, colours, navigation and booking form. */
+.city-opening {
+  padding-top: clamp(116px, 12vw, 160px);
+  padding-bottom: clamp(32px, 6vw, 80px);
+}
+
+.city-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.city-breadcrumb a {
+  color: inherit;
+  text-underline-offset: 4px;
+}
+
+.city-breadcrumb a:hover {
+  color: var(--gold);
+}
+
+.city-opening__grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  align-items: start;
+  gap: clamp(32px, 6vw, 80px);
+}
+
+.city-opening__title {
+  font-size: clamp(2.65rem, 5.9vw, 5rem);
+  text-wrap: balance;
+  margin-bottom: 28px;
+}
+
+.city-opening__copy .lead {
+  max-width: 52ch;
+  margin-bottom: 32px;
+}
+
+.city-opening__watch {
+  display: inline-block;
+  margin: 18px 0 0 24px;
+}
+
+.city-opening__photo {
+  margin: 0;
+}
+
+.city-opening__photo img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.city-opening__photo figcaption {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.city-services {
+  background-color: var(--bg-2);
+}
+
+.city-services__list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: clamp(32px, 8vw, 110px);
+}
+
+.city-services__list article {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.city-services__list h3 {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+}
+
+.city-services__list .lead {
+  margin: 0;
+}
+
+.city-planning__grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 40px clamp(32px, 6vw, 80px);
+}
+
+.city-questions {
+  grid-column: 2;
+  border-top: 1px solid var(--line);
+}
+
+.city-questions details {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.city-questions summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.city-questions summary::marker {
+  color: var(--gold);
+}
+
+.city-questions .lead {
+  margin: 16px 0 0;
+}
+
+@media (max-width: 800px) {
+  .city-opening__grid,
+  .city-planning__grid {
+    grid-template-columns: 1fr;
+  }
+  .city-questions {
+    grid-column: 1;
+  }
+  .city-opening__photo {
+    max-width: 580px;
+  }
+}
+
+@media (max-width: 560px) {
+  .city-services__list {
+    grid-template-columns: 1fr;
+  }
+  .city-breadcrumb {
+    margin-bottom: 28px;
+  }
+  .city-opening__watch {
+    margin-left: 0;
+    display: block;
+    width: fit-content;
+  }
+}
+
 .wa-float {
   position: fixed;
   right: max(16px, env(safe-area-inset-right));

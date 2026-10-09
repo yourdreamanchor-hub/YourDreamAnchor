@@ -1,31 +1,33 @@
 import React from 'react'
 
 import { eventTypes } from '@/collections/Inquiries'
-import { reelCategories } from '@/collections/Reels'
 import { Accent } from '@/components/site/Accent'
 import { BgVideo } from '@/components/site/BgVideo'
 import { BrandIntro } from '@/components/site/BrandIntro'
-import { BrandMark } from '@/components/site/BrandMark'
 import { InquiryForm } from '@/components/site/InquiryForm'
 import { HeroFilms } from '@/components/site/HeroFilms'
-import { Moments, type ReelCard } from '@/components/site/Moments'
+import { Moments } from '@/components/site/Moments'
 import { Nav } from '@/components/site/Nav'
 import { Reveal } from '@/components/site/Reveal'
 import { Testimonials } from '@/components/site/Testimonials'
+import { SiteFooter } from '@/components/site/SiteFooter'
+import { SiteImage } from '@/components/site/SiteImage'
 import { WhatsAppFloat, WhatsAppIcon } from '@/components/site/WhatsAppButton'
-import { asMedia, getSiteData, mediaUrl } from '@/lib/data'
+import { asMedia, getCityPages, getSiteData, mediaUrl } from '@/lib/data'
 import { gamesBackdrop, navigationLinks, selectedLogo } from '@/lib/site-content'
-import { siteOrigin } from '@/lib/site-origin'
+import { cityPath, isInCity } from '@/lib/locations'
+import { reelCards as makeReelCards } from '@/lib/reel-cards'
+import { businessGraph, latestModified, serializeJsonLd } from '@/lib/seo'
 import { heroFilms } from '@/lib/hero-media'
 import { whatsappDigits, whatsappUrl } from '@/lib/whatsapp'
-import { youtubeVideo } from '@/lib/youtube'
 
 export const revalidate = 60
 
-const categoryLabel = Object.fromEntries(reelCategories.map((c) => [c.value, c.label]))
-
 export default async function HomePage() {
-  const { home, settings, reels, testimonials } = await getSiteData()
+  const [{ home, settings, reels, testimonials }, cityPages] = await Promise.all([
+    getSiteData(),
+    getCityPages(),
+  ])
   const { hero } = home
   const films = heroFilms(mediaUrl(hero.video), mediaUrl(hero.poster, 'wide'), hero.films)
   const logo = selectedLogo(settings, mediaUrl(settings.logo))
@@ -33,20 +35,7 @@ export default async function HomePage() {
   const games = home.games ?? {}
   const contact = home.contact ?? {}
 
-  const reelCards: ReelCard[] = reels.map((r) => ({
-    id: r.id,
-    title: r.title,
-    category: r.category,
-    categoryLabel: categoryLabel[r.category] ?? r.category,
-    location: r.location,
-    caption: r.caption,
-    video: mediaUrl(r.video),
-    poster: mediaUrl(r.poster, r.mediaSource === 'youtube' ? 'wide' : 'card'),
-    instagramUrl: r.instagramUrl,
-    mediaSource: r.mediaSource ?? 'upload',
-    youtubeUrl: r.mediaSource === 'youtube' ? youtubeVideo(r.youtubeUrl)?.watchUrl : undefined,
-    orientation: r.orientation ?? 'portrait',
-  }))
+  const reelCards = makeReelCards(reels)
 
   const whatsapp = whatsappUrl(settings.whatsapp, settings.whatsappMessage)
   const highlights = home.marquee ?? []
@@ -69,26 +58,20 @@ export default async function HomePage() {
   if (home.destinations?.length) available.add('destinations')
   if (testimonials.length) available.add('love')
   const backdrop = gamesBackdrop(games, mediaUrl(games.background, 'wide'))
-  const siteUrl = siteOrigin()
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'ProfessionalService',
-    name: settings.brandName,
-    description: settings.metaDescription,
-    url: siteUrl,
-    image: mediaUrl(settings.shareImage, 'wide'),
-    telephone: settings.phone || undefined,
-    email: settings.email || undefined,
-    areaServed: 'India',
-    sameAs: [settings.instagram, settings.youtube].filter(Boolean),
-    founder: { '@type': 'Person', name: settings.anchorName, jobTitle: settings.role },
-  }
+  const jsonLd = businessGraph(settings, home, {
+    modified: latestModified(
+      home.updatedAt,
+      settings.updatedAt,
+      ...reels.map((r) => r.updatedAt),
+      ...testimonials.map((t) => t.updatedAt),
+    ),
+  })
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <Reveal enabled={settings.scrollAnimations !== false} />
       {settings.showLogoIntro !== false && <BrandIntro brand={settings.brandName} logo={logo} />}
@@ -171,7 +154,11 @@ export default async function HomePage() {
           <div className="container about__grid">
             <figure className="about__portrait" data-reveal="portrait">
               {mediaUrl(about.portrait) && (
-                <img src={mediaUrl(about.portrait, 'card')} alt={settings.anchorName} />
+                <SiteImage
+                  media={about.portrait}
+                  alt={settings.anchorName}
+                  sizes="(max-width: 860px) 92vw, (max-width: 1348px) 42vw, 510px"
+                />
               )}
               <figcaption>
                 <span>{settings.anchorName}</span>
@@ -220,7 +207,11 @@ export default async function HomePage() {
                   data-reveal="card"
                 >
                   {mediaUrl(s.image) && (
-                    <img src={mediaUrl(s.image, 'card')} alt="" loading="lazy" />
+                    <SiteImage
+                      media={s.image}
+                      alt={`${s.title} with ${settings.anchorName}`}
+                      sizes="(max-width: 560px) 92vw, (max-width: 1000px) 45vw, 390px"
+                    />
                   )}
                   <div className="service__body">
                     <span className="service__num">{String(i + 1).padStart(2, '0')}</span>
@@ -267,12 +258,10 @@ export default async function HomePage() {
                   if (!m) return null
                   return (
                     <figure key={i} className="gallery__item" data-reveal="photo">
-                      <img
-                        src={mediaUrl(m, 'card')}
+                      <SiteImage
+                        media={m}
                         alt={m.alt}
-                        width={m.width ?? undefined}
-                        height={m.height ?? undefined}
-                        loading="lazy"
+                        sizes="(max-width: 560px) 46vw, (max-width: 1000px) 30vw, 280px"
                       />
                       {g.caption && <figcaption>{g.caption}</figcaption>}
                     </figure>
@@ -327,17 +316,26 @@ export default async function HomePage() {
                 </h2>
               </div>
               <div className="destinations__grid" data-reveal-group>
-                {home.destinations.map((d, i) => (
-                  <figure key={i} className="destination" data-reveal="photo">
-                    {mediaUrl(d.image) && (
-                      <img src={mediaUrl(d.image, 'card')} alt="" loading="lazy" />
-                    )}
-                    <figcaption>
-                      <strong>{d.city}</strong>
-                      {d.venue && <span>{d.venue}</span>}
-                    </figcaption>
-                  </figure>
-                ))}
+                {home.destinations.map((d, i) => {
+                  const cityPage = cityPages.find((page) => isInCity(d.city, page.city))
+                  return (
+                    <figure key={i} className="destination" data-reveal="photo">
+                      {mediaUrl(d.image) && (
+                        <SiteImage
+                          media={d.image}
+                          alt={`${settings.anchorName} at ${d.venue || 'a celebration'} in ${d.city}`}
+                          sizes="(max-width: 600px) 60vw, (max-width: 1000px) 36vw, 230px"
+                        />
+                      )}
+                      <figcaption>
+                        <strong>
+                          {cityPage ? <a href={cityPath(cityPage.city)}>{d.city}</a> : d.city}
+                        </strong>
+                        {d.venue && <span>{d.venue}</span>}
+                      </figcaption>
+                    </figure>
+                  )
+                })}
               </div>
             </div>
           </section>
@@ -426,42 +424,7 @@ export default async function HomePage() {
         <WhatsAppFloat href={whatsapp} name={settings.anchorName.split(' ')[0]} />
       )}
 
-      <footer className="footer">
-        <div className="container footer__inner">
-          <div>
-            <p className="footer__brand">
-              <BrandMark src={logo} className="footer__logo" />
-              {settings.brandName}
-            </p>
-            <p className="muted">
-              {settings.anchorName} · {settings.role}
-            </p>
-          </div>
-          <div className="footer__links">
-            {settings.instagram && (
-              <a href={settings.instagram} target="_blank" rel="noreferrer">
-                Instagram {settings.instagramHandle}
-              </a>
-            )}
-            {settings.youtube && (
-              <a href={settings.youtube} target="_blank" rel="noreferrer">
-                YouTube
-              </a>
-            )}
-            {whatsapp && (
-              <a href={whatsapp} target="_blank" rel="noreferrer">
-                WhatsApp
-              </a>
-            )}
-            <a href="#contact">{settings.bookingLabel || 'Book a date'}</a>
-            <a href="/privacy">Privacy</a>
-          </div>
-          <p className="footer__copy muted">
-            © {new Date().getFullYear()} {settings.brandName}.{' '}
-            {settings.footerNote ?? 'All celebrations reserved.'}
-          </p>
-        </div>
-      </footer>
+      <SiteFooter settings={settings} cityPages={cityPages} />
     </>
   )
 }

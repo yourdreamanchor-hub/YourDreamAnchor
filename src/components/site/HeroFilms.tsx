@@ -8,6 +8,7 @@ import React, {
   useSyncExternalStore,
   type ReactNode,
 } from 'react'
+import { preload } from 'react-dom'
 
 import type { HeroFilm } from '@/lib/hero-media'
 
@@ -219,10 +220,29 @@ export function HeroFilms({
   }, [selection.pending, mobile])
 
   const opening = films[0]
+  // Fetch the first visible cover early, without downloading both phone and desktop covers.
+  if (opening?.poster) {
+    const phoneCover = opening.mobilePoster || opening.poster
+    preload(opening.poster, {
+      as: 'image',
+      fetchPriority: 'high',
+      media: phoneCover !== opening.poster ? '(min-width: 801px)' : undefined,
+    })
+    if (phoneCover !== opening.poster)
+      preload(phoneCover, { as: 'image', fetchPriority: 'high', media: '(max-width: 800px)' })
+  }
   if (!opening?.src)
     return (
       <>
-        {opening?.poster && <img src={opening.poster} alt="" className="hero__video" />}
+        {opening?.poster && (
+          <img
+            src={opening.poster}
+            alt=""
+            className="hero__video"
+            fetchPriority="high"
+            decoding="async"
+          />
+        )}
         {children}
       </>
     )

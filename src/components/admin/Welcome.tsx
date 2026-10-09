@@ -7,6 +7,11 @@ type Props = { payload: Payload; user?: User | null }
 
 const actions = [
   {
+    href: '/admin/collections/city-pages',
+    title: 'Mumbai & Bengaluru pages',
+    text: 'Edit city page copy, opening photos, booking questions and search previews.',
+  },
+  {
     href: '/admin/globals/home',
     title: 'Edit the home page',
     text: 'Hero films, labels, photos, Games background and every home page section.',

@@ -12,6 +12,7 @@ import { Media } from './collections/Media'
 import { Reels } from './collections/Reels'
 import { Testimonials } from './collections/Testimonials'
 import { Inquiries } from './collections/Inquiries'
+import { CityPages } from './collections/CityPages'
 import { HomePage } from './globals/HomePage'
 import { SiteSettings } from './globals/SiteSettings'
 import { migrations } from './migrations'
@@ -35,6 +36,7 @@ export default buildConfig({
     user: Users.slug,
     meta: {
       titleSuffix: ' · Your Dream Anchor',
+      robots: { index: false, follow: false },
     },
     components: {
       graphics: {
@@ -54,7 +56,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Reels, Media, Testimonials, Inquiries, Users],
+  collections: [CityPages, Reels, Media, Testimonials, Inquiries, Users],
   globals: [HomePage, SiteSettings],
   editor: lexicalEditor(),
   secret: env.PAYLOAD_SECRET || '',

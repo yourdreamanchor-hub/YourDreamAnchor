@@ -1,10 +1,11 @@
 import type { MetadataRoute } from 'next'
-
-const base = (process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000').replace(/\/$/, '')
+import { canonicalURL, indexableEnvironment } from '@/lib/seo'
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: '*', allow: '/', disallow: ['/admin', '/api'] },
-    sitemap: `${base}/sitemap.xml`,
+    rules: indexableEnvironment()
+      ? { userAgent: '*', allow: ['/', '/api/media/file/'], disallow: ['/admin', '/api'] }
+      : { userAgent: '*', disallow: '/' },
+    sitemap: canonicalURL('/sitemap.xml'),
   }
 }

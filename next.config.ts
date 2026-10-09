@@ -9,8 +9,20 @@ const dirname = path.dirname(__filename)
 const nextConfig: NextConfig = {
   // Lets the test server build into its own folder alongside a running dev server.
   distDir: process.env.NEXT_DIST_DIR || '.next',
-  headers: async () =>
-    [
+  headers: async () => [
+    {
+      source: '/admin/:path*',
+      headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }],
+    },
+    ...(process.env.VERCEL_ENV === 'preview'
+      ? [
+          {
+            source: '/:path*',
+            headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+          },
+        ]
+      : []),
+    ...[
       '/media/hero-quality-v1.mp4',
       '/media/hero-quality-v1-poster.jpg',
       ...['sangeet', 'haldi', 'games'].flatMap((film) =>
@@ -27,6 +39,7 @@ const nextConfig: NextConfig = {
       source,
       headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
     })),
+  ],
   images: {
     localPatterns: [
       {

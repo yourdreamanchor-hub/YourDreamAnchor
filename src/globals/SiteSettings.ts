@@ -5,6 +5,7 @@ import { revalidateSite } from '../hooks/revalidateSite'
 import { imageField } from '../fields/media'
 import { defaultNavigation, sectionOptions } from '../lib/site-content'
 import { previewURL } from '../lib/site-origin'
+import { defaultSeoDescription, defaultSeoTitle } from '../lib/seo'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -181,14 +182,23 @@ export const SiteSettings: GlobalConfig = {
           fields: [
             {
               name: 'metaTitle',
+              label: 'Home page search title',
               type: 'text',
-              defaultValue: 'Your Dream Anchor — Akshay R Takalkar, Wedding & Event Anchor',
+              defaultValue: defaultSeoTitle,
+              admin: {
+                description:
+                  'Name the service and your main cities naturally. City pages have their own search titles.',
+              },
             },
             {
               name: 'metaDescription',
+              label: 'Home page search description',
               type: 'textarea',
-              defaultValue:
-                'Wedding anchor and emcee for haldi, sangeet, weddings and celebrations across India. Games, music and a crowd that never sits down.',
+              defaultValue: defaultSeoDescription,
+              admin: {
+                description:
+                  'A concise, accurate introduction for search results. Google may choose a different excerpt.',
+              },
             },
             imageField({
               name: 'shareImage',
@@ -196,6 +206,19 @@ export const SiteSettings: GlobalConfig = {
                 description: 'Preview image when the site is shared on WhatsApp, Instagram, etc.',
               },
             }),
+            {
+              name: 'googleSiteVerification',
+              label: 'Google Search Console verification token',
+              type: 'text',
+              validate: (value: string | null | undefined) =>
+                !value ||
+                /^[A-Za-z0-9_-]+$/.test(value.trim()) ||
+                'Paste only the content value from Google’s HTML tag, without quotes or HTML.',
+              admin: {
+                description:
+                  'In Search Console, add the URL-prefix property https://yourdreamanchor.com/ and choose HTML tag. Paste only its content value here, Save, then return to Google and click Verify. Keep the token after verification. A Domain property uses a DNS record instead. Submit https://yourdreamanchor.com/sitemap.xml once verified.',
+              },
+            },
           ],
         },
       ],

@@ -99,8 +99,13 @@ original watch page. YouTube controls available playback quality; these films ar
 Under **Content → Testimonials**, edit a comment's wording, author, event label, social handle and
 original comment link. **Feedback from** controls the Celebrations, Collaborators or Community
 filter. **Show on website** hides an entry, and **Order** determines its position; the first three
-lead the section. There is no twelve-comment limit. Visitors can reveal more comments and expand
-long quotes. Source links stay on the selected platform and do not load social embeds.
+lead the three columns of the floating review wall. Every visible comment participates in the
+loop, with no twelve-comment limit. **Read all** opens the complete still layout, where visitors
+can expand long quotes. Source links stay on the selected platform and do not load social embeds.
+The wall pauses on hover, touch, keyboard focus, when off screen or in a hidden tab; visitors can
+also pause it explicitly. Reduced motion and **Site settings → Header & Motion → Animate sections
+as visitors scroll** being off both show the complete still layout. Short filtered collections
+also use the still layout. Phones use one comfortable column, tablets two and desktops three.
 
 The starting selection contains 59 original comments: 13 celebration comments, 7 collaborator
 comments and 39 community comments. The three existing couple quotes are matched and attributed

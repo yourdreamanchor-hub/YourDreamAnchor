@@ -354,6 +354,7 @@ export default async function HomePage() {
                 </h2>
               </div>
               <Testimonials
+                motionEnabled={settings.scrollAnimations !== false}
                 reviews={testimonials.map((t) => ({
                   id: t.id,
                   quote: t.quote,

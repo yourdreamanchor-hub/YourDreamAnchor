@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
+import { siteOrigin } from '@/lib/site-origin'
 
-const base = (process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000').replace(/\/$/, '')
+const base = siteOrigin()
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

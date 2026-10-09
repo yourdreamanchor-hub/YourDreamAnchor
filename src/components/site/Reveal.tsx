@@ -3,8 +3,9 @@
 import { useEffect } from 'react'
 
 /** Enhances the visible page with one-time entrances and a restrained opening scene. */
-export function Reveal() {
+export function Reveal({ enabled = true }: { enabled?: boolean }) {
   useEffect(() => {
+    if (!enabled) return
     const root = document.querySelector<HTMLElement>('main#top')
     if (!root || !('IntersectionObserver' in window) || !Element.prototype.animate) return
 
@@ -216,7 +217,7 @@ export function Reveal() {
       reduce.removeEventListener('change', onPreferenceChange)
       compact.removeEventListener('change', onPreferenceChange)
     }
-  }, [])
+  }, [enabled])
 
   return null
 }

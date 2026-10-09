@@ -30,7 +30,15 @@ const subscribePhone = (changed: () => void) => {
 }
 
 /** Keep the current frame visible until the next film has decoded, then dissolve over it. */
-export function HeroFilms({ films, children }: { films: HeroFilm[]; children?: ReactNode }) {
+export function HeroFilms({
+  films,
+  children,
+  autoPlay = true,
+}: {
+  films: HeroFilm[]
+  children?: ReactNode
+  autoPlay?: boolean
+}) {
   const stage = useRef<HTMLDivElement>(null)
   const pending = useRef<number | null>(null)
   const preparing = useRef<HTMLVideoElement | null>(null)
@@ -63,7 +71,7 @@ export function HeroFilms({ films, children }: { films: HeroFilm[]; children?: R
   )
   const pausePreference = useSyncExternalStore(subscribePreference, prefersPause, serverPreference)
   const mobile = useSyncExternalStore(subscribePhone, isPhone, serverPreference)
-  const playing = playOverride ?? !pausePreference
+  const playing = playOverride ?? (autoPlay && !pausePreference)
   const [focused, setFocused] = useState(false)
   const [error, setError] = useState('')
 

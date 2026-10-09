@@ -15,6 +15,7 @@ import { Inquiries } from './collections/Inquiries'
 import { HomePage } from './globals/HomePage'
 import { SiteSettings } from './globals/SiteSettings'
 import { migrations } from './migrations'
+import { cmsOrigins, siteOrigin } from './lib/site-origin'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -26,7 +27,9 @@ const s3Enabled = Boolean(env.S3_BUCKET && env.S3_ENDPOINT && env.S3_ACCESS_KEY_
 const s3PublicUrl = env.S3_PUBLIC_URL?.replace(/\/$/, '')
 
 export default buildConfig({
-  serverURL: env.NEXT_PUBLIC_SERVER_URL || undefined,
+  serverURL: siteOrigin(env),
+  csrf: cmsOrigins(env),
+  cors: cmsOrigins(env),
   admin: {
     user: Users.slug,
     meta: {

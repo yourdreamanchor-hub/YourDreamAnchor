@@ -3,11 +3,13 @@ import type { GlobalConfig } from 'payload'
 import { anyone, loggedIn } from '../access'
 import { revalidateSite } from '../hooks/revalidateSite'
 import { imageField } from '../fields/media'
+import { defaultNavigation, sectionOptions } from '../lib/site-content'
+import { previewURL } from '../lib/site-origin'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
   label: 'Site settings',
-  admin: { group: 'Settings' },
+  admin: { group: 'Settings', livePreview: { url: ({ req }) => previewURL(req.url) } },
   access: { read: anyone, update: loggedIn },
   hooks: { afterChange: [revalidateSite] },
   fields: [
@@ -25,13 +27,90 @@ export const SiteSettings: GlobalConfig = {
               defaultValue: 'Wedding & Event Anchor',
               admin: { description: 'Shown under the name, e.g. "Wedding & Event Anchor".' },
             },
+            {
+              name: 'logoStyle',
+              label: 'Site logo',
+              type: 'select',
+              defaultValue: 'monogram',
+              options: [
+                { label: 'Original white monogram', value: 'monogram' },
+                { label: 'Your uploaded logo', value: 'upload' },
+              ],
+            },
             imageField({
               name: 'logo',
               admin: {
+                condition: (_, row) => row.logoStyle === 'upload',
                 description:
                   'Site monogram, shown in the loading intro, scrolled header, footer and browser tab. Use a white SVG or transparent PNG. Leave empty for the original monogram.',
               },
             }),
+          ],
+        },
+        {
+          label: 'Header & motion',
+          fields: [
+            {
+              name: 'navigation',
+              label: 'Header links',
+              type: 'array',
+              maxRows: 8,
+              labels: { singular: 'Header link', plural: 'Header links' },
+              defaultValue: defaultNavigation.map(({ label, value }) => ({
+                label,
+                section: value,
+              })),
+              admin: {
+                initCollapsed: true,
+                components: { RowLabel: '/components/admin/NavLinkLabel' },
+                description:
+                  'Edit the names and drag to reorder. Links to empty sections are hidden automatically.',
+              },
+              fields: [
+                { name: 'label', type: 'text', required: true },
+                {
+                  name: 'section',
+                  label: 'Link to section',
+                  type: 'select',
+                  required: true,
+                  options: sectionOptions,
+                },
+              ],
+            },
+            {
+              name: 'bookingLabel',
+              label: 'Booking button text',
+              type: 'text',
+              defaultValue: 'Book a date',
+            },
+            {
+              name: 'footerNote',
+              label: 'Footer copyright note',
+              type: 'text',
+              defaultValue: 'All celebrations reserved.',
+            },
+            {
+              name: 'showLogoIntro',
+              label: 'Show the animated logo while the homepage loads',
+              type: 'checkbox',
+              defaultValue: true,
+            },
+            {
+              name: 'scrollAnimations',
+              label: 'Animate sections as visitors scroll',
+              type: 'checkbox',
+              defaultValue: true,
+            },
+            {
+              name: 'headerLogoTransition',
+              label: 'Form the logo from the name as visitors scroll',
+              type: 'checkbox',
+              defaultValue: true,
+              admin: {
+                description:
+                  'Turn off to keep the name in the header. The original wordmark uses the contour animation; a replacement logo uses a gentle transition.',
+              },
+            },
           ],
         },
         {

@@ -8,9 +8,13 @@ const actions = [
   {
     href: '/admin/globals/home',
     title: 'Edit the home page',
-    text: 'Headline, hero video, about, ceremonies, gallery, games, destinations.',
+    text: 'Hero films, labels, photos, Games background and every home page section.',
   },
-  { href: '/admin/collections/reels/create', title: 'Add a reel', text: 'Upload an event video to “Moments”.' },
+  {
+    href: '/admin/collections/reels/create',
+    title: 'Add a reel',
+    text: 'Upload an event video to “Moments”.',
+  },
   {
     href: '/admin/collections/media/create',
     title: 'Upload photos & videos',
@@ -23,14 +27,17 @@ const actions = [
   },
   {
     href: '/admin/globals/site-settings',
-    title: 'Contact & WhatsApp',
-    text: 'Phone, WhatsApp number, greeting message, Instagram, logo.',
+    title: 'Header, logo & settings',
+    text: 'Header links, logo intro, scroll animations, contact details, WhatsApp and SEO.',
   },
 ]
 
 /** Shown above the dashboard: quick actions for the most common edits. */
 export default async function Welcome({ payload, user }: Props) {
-  const fresh = await payload.count({ collection: 'inquiries', where: { status: { equals: 'new' } } })
+  const fresh = await payload.count({
+    collection: 'inquiries',
+    where: { status: { equals: 'new' } },
+  })
   const name = user && 'email' in user ? String(user.email).split('@')[0] : null
 
   return (
@@ -46,7 +53,10 @@ export default async function Welcome({ payload, user }: Props) {
       </div>
 
       <div className="yda-welcome__grid">
-        <Link href="/admin/collections/inquiries?where[status][equals]=new" className="yda-card yda-card--enquiries">
+        <Link
+          href="/admin/collections/inquiries?where[status][equals]=new"
+          className="yda-card yda-card--enquiries"
+        >
           <strong>
             {fresh.totalDocs} new {fresh.totalDocs === 1 ? 'enquiry' : 'enquiries'}
           </strong>
@@ -66,9 +76,22 @@ export default async function Welcome({ payload, user }: Props) {
           <li>
             In headings, wrap a word in <code>*asterisks*</code> to show it in gold italics.
           </li>
-          <li>Videos: MP4, under 20 MB. Reels should be vertical (9:16); the hero video landscape.</li>
-          <li>Photos: JPG or PNG, at least 1200 px wide. Fill in the description for Google and screen readers.</li>
-          <li>Drag items in any list (services, gallery, destinations) to change their order.</li>
+          <li>
+            Hero films: drag to reorder, use Show this film to hide one, or choose Your upload to
+            replace it. Optional phone videos and cover images work with every film.
+          </li>
+          <li>
+            Videos: short MP4 clips. Reels should be vertical (9:16); hero films can have both
+            landscape and portrait versions. Keep the original quality when exporting.
+          </li>
+          <li>
+            Photos: JPG or PNG, at least 1200 px wide. Fill in the description for Google and screen
+            readers.
+          </li>
+          <li>
+            Drag items in any list (header links, hero films, services, gallery, destinations) to
+            change their order.
+          </li>
         </ul>
       </details>
     </section>

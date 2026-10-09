@@ -29,6 +29,7 @@ const eslintConfig = [
     ignores: [
       '.next/',
       '.next-test/',
+      '.next-cms-check/',
       'media/',
       'media-import/',
       'src/payload-types.ts',

@@ -1,7 +1,12 @@
 import { createHash } from 'crypto'
-import { APIError, type CollectionAfterChangeHook, type CollectionBeforeValidateHook } from 'payload'
+import {
+  APIError,
+  type CollectionAfterChangeHook,
+  type CollectionBeforeValidateHook,
+} from 'payload'
 
 import type { Inquiry } from '../payload-types'
+import { siteOrigin } from '../lib/site-origin'
 
 const PER_VISITOR_LIMIT = 3 // enquiries per visitor per hour
 const GLOBAL_LIMIT = 30 // public enquiries per 10 minutes, across everyone
@@ -12,24 +17,32 @@ const minutesAgo = (m: number) => new Date(Date.now() - m * 60_000).toISOString(
  * Throttles public form submissions. Stores only a salted hash of the visitor's IP, never the IP itself.
  * Counts live in the database because serverless instances don't share memory.
  */
-export const rateLimitInquiries: CollectionBeforeValidateHook = async ({ operation, req, data }) => {
+export const rateLimitInquiries: CollectionBeforeValidateHook = async ({
+  operation,
+  req,
+  data,
+}) => {
   if (operation !== 'create' || req.user || !data) return data
 
   const ip =
-    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown'
-  const ipHash = createHash('sha256')
-    .update(`${process.env.PAYLOAD_SECRET}:${ip}`)
-    .digest('hex')
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    req.headers.get('x-real-ip') ||
+    'unknown'
+  const ipHash = createHash('sha256').update(`${process.env.PAYLOAD_SECRET}:${ip}`).digest('hex')
 
   const [mine, everyone] = await Promise.all([
     req.payload.count({
       collection: 'inquiries',
-      where: { and: [{ ipHash: { equals: ipHash } }, { createdAt: { greater_than: minutesAgo(60) } }] },
+      where: {
+        and: [{ ipHash: { equals: ipHash } }, { createdAt: { greater_than: minutesAgo(60) } }],
+      },
       req,
     }),
     req.payload.count({
       collection: 'inquiries',
-      where: { and: [{ ipHash: { exists: true } }, { createdAt: { greater_than: minutesAgo(10) } }] },
+      where: {
+        and: [{ ipHash: { exists: true } }, { createdAt: { greater_than: minutesAgo(10) } }],
+      },
       req,
     }),
   ])
@@ -49,7 +62,11 @@ export const rateLimitInquiries: CollectionBeforeValidateHook = async ({ operati
 const fmt = (v?: string | null) => v || '—'
 
 /** Emails the anchor as soon as a new enquiry arrives. */
-export const notifyNewInquiry: CollectionAfterChangeHook<Inquiry> = async ({ doc, operation, req }) => {
+export const notifyNewInquiry: CollectionAfterChangeHook<Inquiry> = async ({
+  doc,
+  operation,
+  req,
+}) => {
   if (operation !== 'create') return doc
 
   const settings = await req.payload.findGlobal({ slug: 'site-settings', req })
@@ -67,7 +84,7 @@ export const notifyNewInquiry: CollectionAfterChangeHook<Inquiry> = async ({ doc
     ['Message', fmt(doc.message)],
   ]
   const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`)
-  const adminUrl = `${process.env.NEXT_PUBLIC_SERVER_URL || ''}/admin/collections/inquiries/${doc.id}`
+  const adminUrl = `${siteOrigin()}/admin/collections/inquiries/${doc.id}`
 
   try {
     await req.payload.sendEmail({

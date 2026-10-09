@@ -536,7 +536,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Everything on the home page, section by section. Click “Live Preview” (top right) to see changes next to the editor.
+ * Edit the home page section by section. Save to publish your changes; Live Preview shows the saved website beside the editor.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home".
@@ -554,6 +554,37 @@ export interface Home {
      */
     subheadline?: string | null;
     /**
+     * The films currently shown in the hero. Drag to reorder, change the labels, or choose Your upload to replace a film. Turn off Show this film to hide it.
+     */
+    films?:
+      | {
+          label: string;
+          source: 'wedding' | 'sangeet' | 'haldi' | 'games' | 'upload';
+          enabled?: boolean | null;
+          /**
+           * MP4, around 10–15 seconds. Used on computers.
+           */
+          video?: (number | null) | Media;
+          /**
+           * Optional cover override. Shown before the video is ready or when motion is paused.
+           */
+          poster?: (number | null) | Media;
+          /**
+           * Optional portrait crop for phones. Leave empty to use the approved phone crop, or your landscape video.
+           */
+          mobileVideo?: (number | null) | Media;
+          /**
+           * Optional cover override for phones.
+           */
+          mobilePoster?: (number | null) | Media;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Visitors can still choose a film and press Play. Reduced-motion and data-saving preferences take priority.
+     */
+    autoPlay?: boolean | null;
+    /**
      * Background video: short (10–15 s), landscape, no sound needed.
      */
     video?: (number | null) | Media;
@@ -570,6 +601,20 @@ export interface Home {
   marquee?:
     | {
         text: string;
+        section?:
+          | (
+              | 'auto'
+              | 'none'
+              | 'about'
+              | 'services'
+              | 'moments'
+              | 'gallery'
+              | 'games'
+              | 'destinations'
+              | 'love'
+              | 'contact'
+            )
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -590,6 +635,7 @@ export interface Home {
         id?: string | null;
       }[]
     | null;
+  servicesKicker?: string | null;
   servicesHeading?: string | null;
   services?:
     | {
@@ -600,11 +646,13 @@ export interface Home {
         id?: string | null;
       }[]
     | null;
+  momentsKicker?: string | null;
   momentsHeading?: string | null;
   /**
    * The videos themselves are managed under Content → Reels.
    */
   momentsIntro?: string | null;
+  galleryKicker?: string | null;
   galleryHeading?: string | null;
   /**
    * Photos shown in the gallery grid. Drag to reorder.
@@ -620,6 +668,11 @@ export interface Home {
     kicker?: string | null;
     heading?: string | null;
     body?: string | null;
+    backgroundStyle?: ('celebration' | 'upload' | 'plain') | null;
+    /**
+     * Wide image with quiet, dark space behind the heading.
+     */
+    background?: (number | null) | Media;
     /**
      * Shown inside the phone frame. Vertical video.
      */
@@ -632,6 +685,7 @@ export interface Home {
         }[]
       | null;
   };
+  destinationsKicker?: string | null;
   destinationsHeading?: string | null;
   destinations?:
     | {
@@ -641,8 +695,10 @@ export interface Home {
         id?: string | null;
       }[]
     | null;
+  testimonialsKicker?: string | null;
   testimonialsHeading?: string | null;
   contact?: {
+    kicker?: string | null;
     heading?: string | null;
     body?: string | null;
     successMessage?: string | null;
@@ -662,10 +718,29 @@ export interface SiteSetting {
    * Shown under the name, e.g. "Wedding & Event Anchor".
    */
   role?: string | null;
+  logoStyle?: ('monogram' | 'upload') | null;
   /**
    * Site monogram, shown in the loading intro, scrolled header, footer and browser tab. Use a white SVG or transparent PNG. Leave empty for the original monogram.
    */
   logo?: (number | null) | Media;
+  /**
+   * Edit the names and drag to reorder. Links to empty sections are hidden automatically.
+   */
+  navigation?:
+    | {
+        label: string;
+        section: 'about' | 'services' | 'moments' | 'gallery' | 'games' | 'destinations' | 'love' | 'contact';
+        id?: string | null;
+      }[]
+    | null;
+  bookingLabel?: string | null;
+  footerNote?: string | null;
+  showLogoIntro?: boolean | null;
+  scrollAnimations?: boolean | null;
+  /**
+   * Turn off to keep the name in the header. The original wordmark uses the contour animation; a replacement logo uses a gentle transition.
+   */
+  headerLogoTransition?: boolean | null;
   /**
    * Shown on the site as a tap-to-call link.
    */
@@ -707,6 +782,19 @@ export interface HomeSelect<T extends boolean = true> {
         eyebrow?: T;
         headline?: T;
         subheadline?: T;
+        films?:
+          | T
+          | {
+              label?: T;
+              source?: T;
+              enabled?: T;
+              video?: T;
+              poster?: T;
+              mobileVideo?: T;
+              mobilePoster?: T;
+              id?: T;
+            };
+        autoPlay?: T;
         video?: T;
         poster?: T;
         primaryLabel?: T;
@@ -716,6 +804,7 @@ export interface HomeSelect<T extends boolean = true> {
     | T
     | {
         text?: T;
+        section?: T;
         id?: T;
       };
   about?:
@@ -734,6 +823,7 @@ export interface HomeSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
+  servicesKicker?: T;
   servicesHeading?: T;
   services?:
     | T
@@ -744,8 +834,10 @@ export interface HomeSelect<T extends boolean = true> {
         accent?: T;
         id?: T;
       };
+  momentsKicker?: T;
   momentsHeading?: T;
   momentsIntro?: T;
+  galleryKicker?: T;
   galleryHeading?: T;
   gallery?:
     | T
@@ -760,6 +852,8 @@ export interface HomeSelect<T extends boolean = true> {
         kicker?: T;
         heading?: T;
         body?: T;
+        backgroundStyle?: T;
+        background?: T;
         video?: T;
         poster?: T;
         list?:
@@ -769,6 +863,7 @@ export interface HomeSelect<T extends boolean = true> {
               id?: T;
             };
       };
+  destinationsKicker?: T;
   destinationsHeading?: T;
   destinations?:
     | T
@@ -778,10 +873,12 @@ export interface HomeSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
+  testimonialsKicker?: T;
   testimonialsHeading?: T;
   contact?:
     | T
     | {
+        kicker?: T;
         heading?: T;
         body?: T;
         successMessage?: T;
@@ -798,7 +895,20 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   brandName?: T;
   anchorName?: T;
   role?: T;
+  logoStyle?: T;
   logo?: T;
+  navigation?:
+    | T
+    | {
+        label?: T;
+        section?: T;
+        id?: T;
+      };
+  bookingLabel?: T;
+  footerNote?: T;
+  showLogoIntro?: T;
+  scrollAnimations?: T;
+  headerLogoTransition?: T;
   phone?: T;
   email?: T;
   whatsapp?: T;

@@ -823,6 +823,10 @@ html:has(main :target) .brand-intro {
   animation: none;
 }
 
+[data-motion='off'] .hero__content {
+  animation: none;
+}
+
 .hero__identity {
   min-width: 0;
   max-width: 640px;
@@ -1608,7 +1612,8 @@ html:has(main :target) .brand-intro {
       rgb(13 8 18 / 0.12) 75%,
       var(--bg) 100%
     ),
-    url('/media/games-celebration-v1.webp');
+    var(--games-backdrop, url('/media/games-celebration-v1.webp'));
+
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

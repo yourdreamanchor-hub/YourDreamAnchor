@@ -2,11 +2,11 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 
-import { brandLogo, brandWordmark, monogramUrl } from '@/lib/brand'
+import { brandWordmark, monogramUrl } from '@/lib/brand'
 import { morphWordmark, wordmarkGlyphs } from '@/lib/brand-morph'
 import { BrandMark } from './BrandMark'
 
-const links = [
+const defaultLinks = [
   { href: '#about', label: 'About' },
   { href: '#services', label: 'Ceremonies' },
   { href: '#moments', label: 'Moments' },
@@ -33,10 +33,16 @@ export function Nav({
   brand,
   instagram,
   logo,
+  links = defaultLinks,
+  bookingLabel = 'Book a date',
+  transitionLogo = true,
 }: {
   brand: string
   instagram?: string | null
   logo?: string
+  links?: { href: string; label: string }[]
+  bookingLabel?: string
+  transitionLogo?: boolean
 }) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -48,7 +54,10 @@ export function Nav({
   const wordmark = useRef<HTMLSpanElement>(null)
   const mark = useRef<HTMLSpanElement>(null)
   const morph = useRef<SVGSVGElement>(null)
-  const canMorph = brandWordmark(brand) === 'YourDreamAnchor' && brandLogo(logo) === monogramUrl
+  const canMorph =
+    transitionLogo &&
+    brandWordmark(brand) === 'YourDreamAnchor' &&
+    (logo || monogramUrl) === monogramUrl
 
   const closeMenu = (href?: string) => {
     if (open && href?.startsWith('#')) destination.current = href
@@ -64,9 +73,11 @@ export function Nav({
     const update = () => {
       frame = 0
       setScrolled(window.scrollY > 24)
-      const progress = reduce.matches
-        ? Number(window.scrollY > 24)
-        : Math.min(1, Math.max(0, (window.scrollY - 40) / 360))
+      const progress = !transitionLogo
+        ? 0
+        : reduce.matches
+          ? Number(window.scrollY > 24)
+          : Math.min(1, Math.max(0, (window.scrollY - 40) / 360))
       if (morph.current && wordmark.current) {
         if (progress !== previousProgress) {
           wordmark.current.style.visibility = 'hidden'
@@ -101,7 +112,7 @@ export function Nav({
       window.removeEventListener('resize', onScroll)
       reduce.removeEventListener('change', onScroll)
     }
-  }, [canMorph])
+  }, [canMorph, transitionLogo])
 
   useEffect(() => {
     if (!open) {
@@ -198,7 +209,7 @@ export function Nav({
             </svg>
           ) : (
             <span ref={mark} className="nav__symbol" aria-hidden="true">
-              <BrandMark src={brandLogo(logo)} className="nav__logo" />
+              <BrandMark src={logo || monogramUrl} className="nav__logo" />
             </span>
           )}
         </a>
@@ -249,7 +260,7 @@ export function Nav({
               className="btn btn--gold nav__mobile-cta"
               onClick={() => closeMenu('#contact')}
             >
-              Book a date <Arrow />
+              {bookingLabel} <Arrow />
             </a>
           </div>
         </nav>
@@ -258,7 +269,7 @@ export function Nav({
           className="btn btn--gold btn--sm nav__cta"
           onClick={() => closeMenu('#contact')}
         >
-          Book a date <Arrow />
+          {bookingLabel} <Arrow />
         </a>
         <button
           ref={toggle}

@@ -4,7 +4,7 @@ type Options = {
   name: string
   label?: string
   required?: boolean
-  admin?: { description?: string }
+  admin?: Pick<NonNullable<UploadField['admin']>, 'description' | 'condition'>
 }
 
 /** Upload field that only offers photos from the media library. */

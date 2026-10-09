@@ -13,7 +13,8 @@ import { Nav } from '@/components/site/Nav'
 import { Reveal } from '@/components/site/Reveal'
 import { WhatsAppFloat, WhatsAppIcon } from '@/components/site/WhatsAppButton'
 import { asMedia, getSiteData, mediaUrl } from '@/lib/data'
-import { brandLogo } from '@/lib/brand'
+import { gamesBackdrop, navigationLinks, selectedLogo } from '@/lib/site-content'
+import { siteOrigin } from '@/lib/site-origin'
 import { heroFilms } from '@/lib/hero-media'
 import { whatsappDigits, whatsappUrl } from '@/lib/whatsapp'
 
@@ -24,8 +25,8 @@ const categoryLabel = Object.fromEntries(reelCategories.map((c) => [c.value, c.l
 export default async function HomePage() {
   const { home, settings, reels, testimonials } = await getSiteData()
   const { hero } = home
-  const films = heroFilms(mediaUrl(hero.video), mediaUrl(hero.poster, 'wide'))
-  const logo = brandLogo(mediaUrl(settings.logo))
+  const films = heroFilms(mediaUrl(hero.video), mediaUrl(hero.poster, 'wide'), hero.films)
+  const logo = selectedLogo(settings, mediaUrl(settings.logo))
   const about = home.about ?? {}
   const games = home.games ?? {}
   const contact = home.contact ?? {}
@@ -56,7 +57,14 @@ export default async function HomePage() {
     'destination weddings': home.destinations?.length ? '#destinations' : undefined,
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+  const available = new Set(['about', 'services', 'contact'])
+  if (reelCards.length) available.add('moments')
+  if (home.gallery?.length) available.add('gallery')
+  if (games.heading) available.add('games')
+  if (home.destinations?.length) available.add('destinations')
+  if (testimonials.length) available.add('love')
+  const backdrop = gamesBackdrop(games, mediaUrl(games.background, 'wide'))
+  const siteUrl = siteOrigin()
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
@@ -77,14 +85,25 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
-      <Reveal />
-      <BrandIntro brand={settings.brandName} logo={logo} />
-      <Nav brand={settings.brandName} instagram={settings.instagram} logo={logo} />
+      <Reveal enabled={settings.scrollAnimations !== false} />
+      {settings.showLogoIntro !== false && <BrandIntro brand={settings.brandName} logo={logo} />}
+      <Nav
+        brand={settings.brandName}
+        instagram={settings.instagram}
+        logo={logo}
+        links={navigationLinks(settings, available)}
+        bookingLabel={settings.bookingLabel || 'Book a date'}
+        transitionLogo={settings.headerLogoTransition !== false}
+      />
 
-      <main id="top">
+      <main id="top" data-motion={settings.scrollAnimations === false ? 'off' : undefined}>
         {/* HERO */}
         <section className="hero">
-          <HeroFilms films={films} key={films[0]?.src || films[0]?.poster}>
+          <HeroFilms
+            films={films}
+            autoPlay={hero.autoPlay !== false}
+            key={JSON.stringify([films, hero.autoPlay])}
+          >
             <div className="hero__veil" />
             <div className="container hero__content">
               <div className="hero__identity">
@@ -120,7 +139,14 @@ export default async function HomePage() {
                 data-reveal="heading"
               >
                 {highlights.map((item, i) => {
-                  const target = highlightTargets[item.text.trim().toLowerCase()]
+                  const target =
+                    item.section === 'none'
+                      ? undefined
+                      : item.section && item.section !== 'auto'
+                        ? available.has(item.section)
+                          ? `#${item.section}`
+                          : undefined
+                        : highlightTargets[item.text.trim().toLowerCase()]
                   return (
                     <li
                       key={item.id ?? i}
@@ -176,7 +202,7 @@ export default async function HomePage() {
         <section id="services" className="section services">
           <div className="container">
             <div className="section__head" data-reveal="heading">
-              <p className="eyebrow">Ceremonies</p>
+              <p className="eyebrow">{home.servicesKicker ?? 'Ceremonies'}</p>
               <h2 className="h2">
                 <Accent text={home.servicesHeading} />
               </h2>
@@ -208,7 +234,7 @@ export default async function HomePage() {
             <div className="container">
               <div className="section__head section__head--split" data-reveal="heading">
                 <div>
-                  <p className="eyebrow">Moments</p>
+                  <p className="eyebrow">{home.momentsKicker ?? 'Moments'}</p>
                   <h2 className="h2">
                     <Accent text={home.momentsHeading} />
                   </h2>
@@ -225,7 +251,7 @@ export default async function HomePage() {
           <section id="gallery" className="section gallery">
             <div className="container">
               <div className="section__head" data-reveal="heading">
-                <p className="eyebrow">Gallery</p>
+                <p className="eyebrow">{home.galleryKicker ?? 'Gallery'}</p>
                 <h2 className="h2">
                   <Accent text={home.galleryHeading} />
                 </h2>
@@ -254,7 +280,15 @@ export default async function HomePage() {
 
         {/* GAMES */}
         {games.heading && (
-          <section id="games" className="section games">
+          <section
+            id="games"
+            className="section games"
+            style={
+              {
+                '--games-backdrop': backdrop ? `url(${JSON.stringify(backdrop)})` : 'none',
+              } as React.CSSProperties
+            }
+          >
             <div className="container games__grid">
               <div className="games__copy" data-reveal="copy">
                 <p className="games__alert">{games.kicker}</p>
@@ -282,7 +316,7 @@ export default async function HomePage() {
           <section id="destinations" className="section destinations">
             <div className="container">
               <div className="section__head" data-reveal="heading">
-                <p className="eyebrow">Where we’ve celebrated</p>
+                <p className="eyebrow">{home.destinationsKicker ?? 'Where we’ve celebrated'}</p>
                 <h2 className="h2">
                   <Accent text={home.destinationsHeading} />
                 </h2>
@@ -309,7 +343,7 @@ export default async function HomePage() {
           <section id="love" className="section love">
             <div className="container">
               <div className="section__head" data-reveal="heading">
-                <p className="eyebrow">Kind words</p>
+                <p className="eyebrow">{home.testimonialsKicker ?? 'Kind words'}</p>
                 <h2 className="h2">
                   <Accent text={home.testimonialsHeading} />
                 </h2>
@@ -339,7 +373,7 @@ export default async function HomePage() {
         <section id="contact" className="section contact">
           <div className="container contact__grid">
             <div className="contact__copy" data-reveal="copy">
-              <p className="eyebrow">Bookings</p>
+              <p className="eyebrow">{contact.kicker ?? 'Bookings'}</p>
               <h2 className="h2">
                 <Accent text={contact.heading} />
               </h2>
@@ -417,11 +451,12 @@ export default async function HomePage() {
                 WhatsApp
               </a>
             )}
-            <a href="#contact">Book a date</a>
+            <a href="#contact">{settings.bookingLabel || 'Book a date'}</a>
             <a href="/privacy">Privacy</a>
           </div>
           <p className="footer__copy muted">
-            © {new Date().getFullYear()} {settings.brandName}. All celebrations reserved.
+            © {new Date().getFullYear()} {settings.brandName}.{' '}
+            {settings.footerNote ?? 'All celebrations reserved.'}
           </p>
         </div>
       </footer>

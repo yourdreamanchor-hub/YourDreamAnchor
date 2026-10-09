@@ -58,6 +58,15 @@ afterEach(() => {
 })
 
 describe('the curated hero films', () => {
+  it('lets the CMS start with a poster and allows a visitor to press Play', () => {
+    const view = render(React.createElement(HeroFilms, { films, autoPlay: false }))
+    act(() => VisibilityObserver.current.enter(true))
+    expect(play).not.toHaveBeenCalled()
+    expect(view.getByRole('button', { name: 'Play hero films' })).toBeTruthy()
+    fireEvent.click(view.getByRole('button', { name: 'Play hero films' }))
+    expect(play).toHaveBeenCalled()
+  })
+
   it('loads only the opening film before another is requested', () => {
     const view = mount()
     expect(view.container.querySelectorAll('video')).toHaveLength(1)

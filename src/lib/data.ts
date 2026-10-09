@@ -2,7 +2,7 @@ import { getPayload } from 'payload'
 import { cache } from 'react'
 
 import config from '@/payload.config'
-import type { Media } from '@/payload-types'
+export { asMedia, mediaUrl } from './media'
 
 export const getSiteData = cache(async () => {
   const payload = await getPayload({ config: await config })
@@ -24,16 +24,3 @@ export const getSiteData = cache(async () => {
 })
 
 export type SiteData = Awaited<ReturnType<typeof getSiteData>>
-
-type MaybeMedia = Media | number | null | undefined
-
-export function asMedia(m: MaybeMedia): Media | null {
-  return m && typeof m === 'object' ? m : null
-}
-
-/** URL of an upload, optionally at one of the generated image sizes. */
-export function mediaUrl(m: MaybeMedia, size?: 'thumb' | 'card' | 'wide'): string | undefined {
-  const media = asMedia(m)
-  if (!media) return undefined
-  return (size && media.sizes?.[size]?.url) || media.url || undefined
-}

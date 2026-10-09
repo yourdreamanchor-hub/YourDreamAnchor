@@ -2008,6 +2008,82 @@ html:has(main :target) .brand-intro {
 
 .quote footer div {
   display: grid;
+  min-width: 0;
+}
+
+.quote footer strong {
+  overflow-wrap: anywhere;
+}
+.quote:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+.quote {
+  scroll-margin-top: 100px;
+}
+.quote__text {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.quote__text--collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.quote__expand {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 10px 0;
+  margin: -16px 0 22px;
+  background: none;
+  border: 0;
+  color: var(--gold);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.quote__source {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  justify-self: start;
+  min-height: 44px;
+  padding: 10px 0 2px;
+  color: var(--gold);
+  font-size: 12px;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 180ms ease;
+}
+.quote__source:hover,
+.quote__source:focus-visible {
+  text-decoration-color: currentColor;
+}
+.love__filters {
+  margin-bottom: 28px;
+}
+.love__filters .chip {
+  min-height: 44px;
+}
+.love__more {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: 28px;
+}
+.love__more p {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .love__more {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 
 .quote footer small {

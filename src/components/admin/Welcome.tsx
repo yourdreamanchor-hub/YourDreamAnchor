@@ -23,7 +23,7 @@ const actions = [
   {
     href: '/admin/collections/testimonials',
     title: 'Kind words',
-    text: 'Add or edit what couples said about you.',
+    text: 'Edit celebration feedback, collaborator praise and community comments with their source links.',
   },
   {
     href: '/admin/globals/site-settings',
@@ -73,6 +73,11 @@ export default async function Welcome({ payload, user }: Props) {
       <details className="yda-welcome__tips">
         <summary>Tips for great results</summary>
         <ul>
+          <li>
+            Kind words: edit the quote and author, choose who the feedback is from, and keep the
+            original comment link. Use Show on website to hide an entry; lower order numbers lead
+            the section.
+          </li>
           <li>
             In headings, wrap a word in <code>*asterisks*</code> to show it in gold italics.
           </li>

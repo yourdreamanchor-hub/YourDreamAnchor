@@ -11,6 +11,7 @@ import { HeroFilms } from '@/components/site/HeroFilms'
 import { Moments, type ReelCard } from '@/components/site/Moments'
 import { Nav } from '@/components/site/Nav'
 import { Reveal } from '@/components/site/Reveal'
+import { Testimonials } from '@/components/site/Testimonials'
 import { WhatsAppFloat, WhatsAppIcon } from '@/components/site/WhatsAppButton'
 import { asMedia, getSiteData, mediaUrl } from '@/lib/data'
 import { gamesBackdrop, navigationLinks, selectedLogo } from '@/lib/site-content'
@@ -352,23 +353,19 @@ export default async function HomePage() {
                   <Accent text={home.testimonialsHeading} />
                 </h2>
               </div>
-              <div className="love__grid" data-reveal-group>
-                {testimonials.map((t) => (
-                  <blockquote key={t.id} className="quote" data-reveal="quote">
-                    <span className="quote__mark" aria-hidden>
-                      “
-                    </span>
-                    <p>{t.quote}</p>
-                    <footer>
-                      {mediaUrl(t.photo) && <img src={mediaUrl(t.photo, 'thumb')} alt="" />}
-                      <div>
-                        <strong>{t.name}</strong>
-                        {t.event && <small>{t.event}</small>}
-                      </div>
-                    </footer>
-                  </blockquote>
-                ))}
-              </div>
+              <Testimonials
+                reviews={testimonials.map((t) => ({
+                  id: t.id,
+                  quote: t.quote,
+                  name: t.name,
+                  event: t.event,
+                  photo: mediaUrl(t.photo, 'thumb'),
+                  audience: t.audience,
+                  sourcePlatform: t.sourcePlatform,
+                  sourceUrl: t.sourceUrl,
+                  sourceHandle: t.sourceHandle,
+                }))}
+              />
             </div>
           </section>
         )}

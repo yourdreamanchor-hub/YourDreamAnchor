@@ -96,6 +96,20 @@ showcase. Their embeds load only after a visitor clicks, use YouTube’s privacy
 and are removed when the viewer closes or switches films. Every YouTube film also links to its
 original watch page. YouTube controls available playback quality; these films are not re-encoded.
 
+Under **Content → Testimonials**, edit a comment's wording, author, event label, social handle and
+original comment link. **Feedback from** controls the Celebrations, Collaborators or Community
+filter. **Show on website** hides an entry, and **Order** determines its position; the first three
+lead the section. There is no twelve-comment limit. Visitors can reveal more comments and expand
+long quotes. Source links stay on the selected platform and do not load social embeds.
+
+The starting selection contains 59 original comments: 13 celebration comments, 7 collaborator
+comments and 39 community comments. The three existing couple quotes are matched and attributed
+in place; an editor's changed text, custom photos, event labels and order are preserved. Other
+comments are added only once by their source IDs. Section wording stays editable under Home page.
+The complete collection is saved in `outputs/social-reviews-20261009/`, with source and coverage
+details. It contains the comments collected from 68 Instagram posts and 26 YouTube videos, not
+every comment in the accounts' history; some replies and additional comments were not loaded.
+
 Videos: upload MP4 (H.264), ideally under 20 MB. To shrink one:
 
 ```bash
@@ -182,4 +196,5 @@ Spam protection: the form has a hidden honeypot field and allows at most 3 enqui
 visitors watching reels), and projects pause after a week with no activity. If either becomes a problem,
 upgrade to Pro or move videos to another S3-compatible store: only the `S3_*` values change.
 
-The seeded testimonials are real comments couples left on @yourdreamanchor's Instagram posts. Ask them before launch whether they're happy to be quoted.
+Imported feedback keeps its original wording, author and source link. Community comments are
+shown as public feedback without assigning customer status or a star rating.

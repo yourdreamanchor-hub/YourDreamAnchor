@@ -5,6 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import config from '@/payload.config'
 import type { Home, SiteSetting, User } from '@/payload-types'
 import { cmsOrigins } from '@/lib/site-origin'
+import { getSiteData } from '@/lib/data'
 
 let payload: Payload
 let home: Home
@@ -12,6 +13,7 @@ let settings: SiteSetting
 let user: User
 let token: string
 const createdReels: number[] = []
+const createdTestimonials: number[] = []
 
 describe('authenticated CMS saving', () => {
   beforeAll(async () => {
@@ -37,6 +39,7 @@ describe('authenticated CMS saving', () => {
     if (home) await payload.updateGlobal({ slug: 'home', data: home })
     if (settings) await payload.updateGlobal({ slug: 'site-settings', data: settings })
     for (const id of createdReels) await payload.delete({ collection: 'reels', id })
+    for (const id of createdTestimonials) await payload.delete({ collection: 'testimonials', id })
     if (user) await payload.delete({ collection: 'users', id: user.id })
     if (payload) await payload.destroy()
   }, 30000)
@@ -133,6 +136,62 @@ describe('authenticated CMS saving', () => {
     expect(saved.phone).toBe(settings.phone)
     expect(saved.whatsapp).toBe(settings.whatsapp)
     expect(saved.logo).toBe(settings.logo)
+  })
+
+  it('saves, reorders and hides feedback, while fetching all visible entries beyond twelve', async () => {
+    for (let index = 0; index < 16; index++) {
+      const comment = await payload.create({
+        collection: 'testimonials',
+        overrideAccess: false,
+        user: { ...user, collection: 'users' },
+        data: {
+          name: `CMS feedback ${index}`,
+          quote: 'Thank you for hosting our celebration!',
+          audience: 'celebration',
+          sourcePlatform: 'instagram',
+          sourceHandle: '@guest',
+          sourceUrl: 'https://www.instagram.com/p/DeKEPSoRU0I/',
+          featured: index !== 0,
+          order: 1000 + index,
+        },
+      })
+      createdTestimonials.push(comment.id)
+    }
+    const id = createdTestimonials[1]
+    await payload.update({
+      collection: 'testimonials',
+      id,
+      overrideAccess: false,
+      user: { ...user, collection: 'users' },
+      data: { quote: 'Edited original feedback ✨', audience: 'industry', order: 2000 },
+    })
+    expect(await payload.findByID({ collection: 'testimonials', id })).toMatchObject({
+      quote: 'Edited original feedback ✨',
+      audience: 'industry',
+      order: 2000,
+      sourceHandle: '@guest',
+      featured: true,
+    })
+    const { testimonials } = await getSiteData()
+    const visibleIds = testimonials.map((comment) => comment.id)
+    expect(visibleIds).not.toContain(createdTestimonials[0])
+    for (const visible of createdTestimonials.slice(1)) expect(visibleIds).toContain(visible)
+    expect(visibleIds.at(-1)).toBe(id)
+    await expect(
+      payload.update({
+        collection: 'testimonials',
+        id,
+        overrideAccess: false,
+        data: { quote: 'Unauthorized' },
+      }),
+    ).rejects.toThrow()
+    await expect(
+      payload.update({
+        collection: 'testimonials',
+        id,
+        data: { sourceUrl: 'https://instagram.com.attacker.example/p/example' },
+      }),
+    ).rejects.toThrow()
   })
 
   it('rejects a missing upload and a photo selected as a video', async () => {

@@ -10,6 +10,8 @@ import path from 'path'
 import { getPayload } from 'payload'
 
 import config from './payload.config'
+import socialFeedback from './content/social-feedback.json'
+import type { FeedbackAudience, FeedbackPlatform } from './lib/feedback'
 
 const root = path.resolve(process.cwd(), 'media-import')
 const web = (f: string) => path.join(root, 'web', f)
@@ -211,28 +213,28 @@ for (const film of [
     })
 }
 
-// Real comments left by couples on @yourdreamanchor's Instagram posts (emojis removed, wording kept).
-const testimonials = [
-  {
-    quote:
-      'The best of the best. Couldn’t have asked for anyone other than Your Dream Anchor for our big day.',
-    name: 'Naina',
-    event: 'Bride · Wedding at Shoonya Farm Retreat, Bengaluru',
-  },
-  {
-    quote:
-      'Thank you so much for hosting both our events. You kept everyone entertained and engaged all the time. Our guests had a lot of fun!',
-    name: 'Aanchal',
-    event: 'Bride · Sangeet & Haldi',
-  },
-  {
-    quote: '“Our dream anchor” for our big day. The Haldi was lit because of you!',
-    name: 'Hari',
-    event: 'Groom · Haldi & Wedding, Bengaluru',
-  },
-]
-for (const [i, t] of testimonials.entries()) {
-  await payload.create({ collection: 'testimonials', data: { ...t, order: i } })
+// Original public comments, including their emojis and source attribution.
+for (const comment of socialFeedback) {
+  const exists = await payload.count({
+    collection: 'testimonials',
+    where: { sourceId: { equals: comment.sourceId } },
+  })
+  if (exists.totalDocs > 0) continue
+  await payload.create({
+    collection: 'testimonials',
+    data: {
+      quote: comment.quote,
+      name: comment.name,
+      event: comment.event,
+      audience: comment.audience as FeedbackAudience,
+      sourcePlatform: comment.sourcePlatform as FeedbackPlatform,
+      sourceHandle: comment.sourceHandle,
+      sourceUrl: comment.sourceUrl,
+      sourceId: comment.sourceId,
+      featured: true,
+      order: comment.order,
+    },
+  })
 }
 
 await payload.updateGlobal({
@@ -355,7 +357,7 @@ await payload.updateGlobal({
     ],
     galleryHeading: 'Behind the *mic.*',
     gallery,
-    testimonialsHeading: 'What the families *said.*',
+    testimonialsHeading: 'What people *said.*',
     contact: {
       heading: 'Is your date still *open?*',
       body: 'Tell us about your celebration. We usually reply within a day with availability and a plan.',

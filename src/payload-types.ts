@@ -223,6 +223,8 @@ export interface Media {
   };
 }
 /**
+ * Real celebration feedback and public comments. Every imported comment links to its original source.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "testimonials".
  */
@@ -232,9 +234,21 @@ export interface Testimonial {
   name: string;
   event?: string | null;
   /**
-   * Optional photo of the couple.
+   * Optional photo of the author or couple.
    */
   photo?: (number | null) | Media;
+  audience: 'celebration' | 'industry' | 'community';
+  sourcePlatform: 'instagram' | 'youtube' | 'other';
+  sourceHandle?: string | null;
+  /**
+   * The website shows a link to this original comment. Leave empty for direct feedback.
+   */
+  sourceUrl?: string | null;
+  sourceId?: string | null;
+  featured?: boolean | null;
+  /**
+   * Lower numbers appear first. The first three lead the section.
+   */
   order?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -461,6 +475,12 @@ export interface TestimonialsSelect<T extends boolean = true> {
   name?: T;
   event?: T;
   photo?: T;
+  audience?: T;
+  sourcePlatform?: T;
+  sourceHandle?: T;
+  sourceUrl?: T;
+  sourceId?: T;
+  featured?: T;
   order?: T;
   updatedAt?: T;
   createdAt?: T;

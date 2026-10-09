@@ -17,7 +17,14 @@ export const getSiteData = cache(async () => {
       limit: 24,
       depth: 1,
     }),
-    payload.find({ collection: 'testimonials', sort: 'order', limit: 12, depth: 1 }),
+    payload.find({
+      collection: 'testimonials',
+      where: { featured: { equals: true } },
+      sort: 'order',
+      pagination: false,
+      limit: 0,
+      depth: 1,
+    }),
   ])
 
   return { home, settings, reels: reels.docs, testimonials: testimonials.docs }

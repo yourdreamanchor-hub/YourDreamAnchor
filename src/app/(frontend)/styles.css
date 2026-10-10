@@ -1912,6 +1912,7 @@ html:has(main :target) .brand-intro {
 
 .destination img {
   width: 100%;
+  height: auto;
   aspect-ratio: 3 / 4;
   object-fit: cover;
   border-radius: 999px 999px var(--radius-sm) var(--radius-sm);
